@@ -106,7 +106,7 @@ html[lang="en"] .emo{font-size:14px;}
 .dh-tags span{font-size:12px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 13px;color:rgba(255,255,255,.85);}
 .demo-note{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#8a6d1f;background:#fdf6df;border:1px solid #ecd9a0;border-radius:999px;padding:6px 14px;margin-top:18px;}
 
-.cols{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px;align-items:start;}
+.cols{display:grid;grid-template-columns:1.55fr .75fr;gap:18px;margin-top:18px;align-items:start;}
 @media(max-width:820px){.cols{grid-template-columns:1fr;}}
 .panel{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:26px 24px;margin-bottom:18px;}
 .panel h3{font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px;}
@@ -119,16 +119,18 @@ html[lang="en"] .emo{font-size:14px;}
 .lbox .ll{font-size:11.5px;font-weight:900;color:var(--gray);letter-spacing:.08em;margin-bottom:6px;}
 .lbox .ltxt{font-size:13px;color:var(--gray);}
 
-.rnode{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);}
+.rnode{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid var(--rule);}
 .rnode:last-child{border-bottom:none;}
-.rpin{flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:'Black Han Sans';font-size:14px;}
+.rpin{flex-shrink:0;width:44px;height:44px;border-radius:13px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:'Black Han Sans';font-size:18px;}
 .rnode:nth-child(even) .rpin{background:var(--sky);}
-.rinfo b{font-size:14.5px;font-weight:900;}
-.rinfo .addr{font-size:12px;color:var(--lgray);}
-.rinfo p{font-size:13px;color:var(--gray);margin-top:6px;line-height:1.75;}
-.rimg{width:100%;height:130px;border-radius:10px;background:var(--cardgray) center/cover no-repeat;margin-top:10px;display:none;}
+.rinfo b{font-size:18px;font-weight:900;}
+.rinfo .addr{font-size:13px;color:var(--lgray);margin-top:2px;}
+.rinfo p{font-size:14px;color:var(--gray);margin-top:10px;line-height:1.85;}
+.rimg{width:100%;height:180px;border-radius:12px;background:var(--cardgray) center/cover no-repeat;margin-top:12px;display:none;}
 .rimg.show{display:block;}
-#map{width:100%;height:340px;border-radius:14px;border:2px solid var(--ink);margin-top:16px;background:var(--cardgray);display:grid;place-items:center;color:var(--lgray);font-size:13.5px;text-align:center;padding:0 20px;}
+.blog-btn{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;font-weight:700;color:var(--skydk);background:var(--skybg);border:1px solid rgba(31,162,222,.35);border-radius:999px;padding:9px 17px;text-decoration:none;transition:.18s;}
+.blog-btn:hover{background:var(--sky);color:#fff;border-color:var(--sky);transform:translateY(-2px);}
+#map{width:100%;height:380px;border-radius:14px;border:2px solid var(--ink);margin-top:16px;background:var(--cardgray);display:grid;place-items:center;color:var(--lgray);font-size:13.5px;text-align:center;padding:0 20px;}
 
 /* transport */
 .tp{background:#fff;border:2px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:8px 8px 0 var(--skybg);margin-bottom:18px;}
@@ -149,31 +151,11 @@ html[lang="en"] .emo{font-size:14px;}
 .tp-opt .oc{font-weight:900;white-space:nowrap;}
 .tp-opt .ot{color:var(--gray);flex:1;text-align:right;}
 
-/* passport */
-.pp{background:linear-gradient(160deg,#141414,#26313a);color:#fff;border-radius:18px;padding:26px 24px;margin-bottom:18px;}
-.pp h3{color:#fff;font-size:16px;font-weight:900;}
-.pp .psub{font-size:12.5px;color:rgba(255,255,255,.55);margin:4px 0 14px;}
-.progress{height:7px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden;margin-bottom:8px;}
-.progress span{display:block;height:100%;background:var(--sky);transition:width .4s;}
-.pp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.1);}
-.pp-row:last-child{border-bottom:none;}
-.pp-row .nm{font-size:13.5px;font-weight:700;color:rgba(255,255,255,.75);}
-.pp-row .nm.done{color:#7cd0f7;}
-.pp-btn{background:rgba(31,162,222,.2);border:1px solid rgba(31,162,222,.45);color:#7cd0f7;border-radius:8px;font-size:12px;padding:6px 13px;}
-.pp-check{color:#7cd0f7;font-size:18px;}
 .textbook-panel .tb{font-size:13.5px;color:var(--gray);line-height:1.9;}
 .btn-wide{width:100%;border:none;border-radius:13px;background:var(--sky);color:#fff;font-size:14.5px;font-weight:700;padding:15px;transition:.2s;}
 .btn-wide:hover{background:#3db4ea;}
 .btn-wide.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--rule);margin-top:10px;}
 .btn-wide.ghost:hover{border-color:var(--ink);}
-
-/* overlay + toast */
-.overlay{position:fixed;inset:0;background:rgba(10,10,10,.55);z-index:90;display:flex;align-items:center;justify-content:center;padding:24px;}
-.complete-card{background:#fff;border-radius:22px;max-width:420px;width:100%;padding:38px 30px;text-align:center;border:2px solid var(--ink);box-shadow:10px 10px 0 var(--sky);}
-.cc-seal{width:70px;height:70px;border-radius:50%;background:var(--skybg);display:grid;place-items:center;font-size:32px;margin:0 auto 16px;}
-.complete-card h2{font-size:24px;}
-.complete-card p{font-size:14px;color:var(--gray);margin-top:6px;}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13.5px;padding:12px 20px;border-radius:999px;z-index:95;display:flex;gap:8px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.25);}
 
 .footer{border-top:1px solid var(--rule);padding:34px 0;margin-top:20px;}
 .footer .ft{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--gray);}
@@ -246,9 +228,6 @@ html[lang="en"] .emo{font-size:14px;}
   </div>
 </section>
 
-<div id="overlayRoot"></div>
-<div id="toastRoot"></div>
-
 <footer class="footer"><div class="wrap ft">
   <span><b data-i18n="brand2">로컬 링크</b> · AI History Curator</span>
   <span data-i18n="footR">감정으로 진입 → 서사로 몰입 → 교과서 연결 → 즉시 출발</span>
@@ -284,10 +263,9 @@ const DICT={
     carReasonClear:"도로가 원활해요. 자차로 편하게 이동 가능합니다.",
     carReasonBad:"기상 상황을 고려하면 대중교통이 더 안전해요.",
     liveRoute:"실시간 경로 기준",toll:"통행료",
-    ppH:"🎫 스탬프 패스포트",ppLeft:(n)=>`${3-n}곳 더 인증하면 완주!`,ppDone:"완주!",verify:"인증",verified:(nm)=>`${nm} 방문 인증!`,
     tbH:"📖 교과서 연결",
+    blogBtn:"📝 이곳의 블로그 리뷰 보기",
     otherEmotion:"다른 감정으로 만나기 →",newSearch2:"새로 검색하기",
-    ccKicker:"ROUTE COMPLETED",ccH:"완주를 축하합니다",ccP:(nm)=>`「${nm}」의 모든 장소를 걸었습니다.`,
     footR:"감정으로 진입 → 서사로 몰입 → 교과서 연결 → 즉시 출발",
     emotions:[
       ["🔥","가슴 뜨거워지는,<br/>화나는 역사","g"],["😤","이건 좀 너무하지 않아?<br/>싶은 역사","g"],["📖","수능에 나왔는데<br/>제대로 몰랐던 역사","g"],
@@ -325,10 +303,9 @@ const DICT={
     carReasonClear:"Roads are clear — driving is the comfortable option.",
     carReasonBad:"Given the weather, public transit is the safer bet.",
     liveRoute:"Based on live route",toll:"Toll",
-    ppH:"🎫 Stamp Passport",ppLeft:(n)=>`${3-n} more to complete!`,ppDone:"Completed!",verify:"Check in",verified:(nm)=>`Checked in at ${nm}!`,
     tbH:"📖 Textbook connection",
+    blogBtn:"📝 See visitor reviews",
     otherEmotion:"Meet another feeling →",newSearch2:"Start a new search",
-    ccKicker:"ROUTE COMPLETED",ccH:"Congratulations!",ccP:(nm)=>`You walked every place of “${nm}”.`,
     footR:"Feeling → Story → Connection → Departure",
     emotions:[
       ["🔥","History that makes<br/>your blood boil","g"],["😤","History that makes you say<br/>“that’s just too much”","g"],["📖","History you memorized<br/>but never really knew","g"],
@@ -347,7 +324,7 @@ const D=()=>DICT[lang];
 const esc=(s)=>{const d=document.createElement("div");d.textContent=String(s??"");return d.innerHTML;};
 
 /* ================= state ================= */
-let state={query:"",detected:[],emotion:"",course:null,isDemo:false,spots:[],stamps:[],weather:"clear",dir:null};
+let state={query:"",detected:[],emotion:"",course:null,isDemo:false,spots:[],weather:"clear",dir:null};
 
 /* ================= view router ================= */
 function setView(id){
@@ -456,7 +433,7 @@ async function pickEmotion(i){
     }));
   }
   state.course=course;state.isDemo=isDemo;state.spots=spots;
-  state.stamps=spots.map(()=>false);state.dir=null;
+  state.dir=null;
 
   renderDetail();
   setView("detail");
@@ -500,8 +477,9 @@ function renderDetail(){
               <div class="rinfo" style="flex:1;">
                 <b>${esc(s.title||s.name)}</b>
                 ${s.addr?`<div class="addr">${esc(s.addr)}</div>`:""}
-                <p><b style="font-size:11.5px;color:var(--skydk)">${d.whyLabel}</b><br/>${esc(s.why||"")}</p>
+                <p><b style="font-size:12px;color:var(--skydk)">${d.whyLabel}</b><br/>${esc(s.why||"")}</p>
                 <div class="rimg ${s.image?"show":""}" style="${s.image?`background-image:url('${s.image}')`:""}"></div>
+                <a class="blog-btn" href="${blogUrl(s)}" target="_blank" rel="noopener">${d.blogBtn}</a>
               </div>
             </div>`).join("")}
           ${mappable.length?`<div id="map">${d.mapFallback}</div>`:""}
@@ -509,12 +487,11 @@ function renderDetail(){
       </div>
       <div>
         <div id="tpRoot"></div>
-        <div class="pp" id="ppRoot"></div>
         <button class="btn-wide" id="otherEmotionBtn">${d.otherEmotion}</button>
         <button class="btn-wide ghost" id="newSearchBtn2">${d.newSearch2}</button>
       </div>
     </div>`;
-  renderTransport();renderPassport();
+  renderTransport();
   if(mappable.length)drawMap(mappable);
   $("#otherEmotionBtn").addEventListener("click",()=>{renderEgrid();setView("emotions");});
   $("#newSearchBtn2").addEventListener("click",goHome);
@@ -549,56 +526,14 @@ function renderTransport(){
   $$("#tpRoot [data-wx]").forEach(b=>b.addEventListener("click",()=>{state.weather=b.dataset.wx;renderTransport();}));
 }
 
-function renderPassport(){
-  const d=D(),root=$("#ppRoot");if(!root)return;
-  const n=state.stamps.filter(Boolean).length,total=state.spots.length;
-  root.innerHTML=`
-    <h3>${d.ppH}</h3>
-    <p class="psub">${n}/${total} — ${n<total?d.ppLeft(n):d.ppDone}</p>
-    <div class="progress"><span style="width:${(n/total)*100}%"></span></div>
-    ${state.spots.map((s,i)=>`
-      <div class="pp-row">
-        <span class="nm ${state.stamps[i]?"done":""}">${esc(s.title||s.name)}</span>
-        ${state.stamps[i]?`<span class="pp-check">✔</span>`:`<button class="pp-btn" data-stamp="${i}">${d.verify}</button>`}
-      </div>`).join("")}`;
-  $$("#ppRoot [data-stamp]").forEach(b=>b.addEventListener("click",()=>{
-    const i=+b.dataset.stamp;
-    state.stamps[i]=true;
-    toast(D().verified(state.spots[i].title||state.spots[i].name));
-    renderPassport();
-    if(state.stamps.every(Boolean))setTimeout(showComplete,450);
-  }));
-}
-
-function showComplete(){
-  const d=D();
-  $("#overlayRoot").innerHTML=`
-    <div class="overlay" id="ov">
-      <div class="complete-card">
-        <div class="cc-seal">🏆</div>
-        <span style="font-size:11px;letter-spacing:.24em;color:var(--skydk);font-weight:900;">${d.ccKicker}</span>
-        <h2 class="disp" style="margin-top:8px;">${d.ccH}</h2>
-        <p>${d.ccP(state.course?.title||"")}</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap;">
-          <button class="btn-wide" style="width:auto;padding:13px 22px;" id="ccOther">${d.otherEmotion}</button>
-          <button class="btn-wide ghost" style="width:auto;padding:13px 22px;margin-top:0;" id="ccHome">${d.newSearch2}</button>
-        </div>
-      </div>
-    </div>`;
-  $("#ov").addEventListener("click",e=>{if(e.target.id==="ov")$("#overlayRoot").innerHTML="";});
-  $("#ccOther").addEventListener("click",()=>{$("#overlayRoot").innerHTML="";renderEgrid();setView("emotions");});
-  $("#ccHome").addEventListener("click",()=>{$("#overlayRoot").innerHTML="";goHome();});
-}
-
-let toastTimer=null;
-function toast(msg){
-  $("#toastRoot").innerHTML=`<div class="toast">✔ ${esc(msg)}</div>`;
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>$("#toastRoot").innerHTML="",2200);
+function blogUrl(s){
+  const name=(s.title||s.name||"").trim();
+  if(lang==="en")return "https://www.google.com/search?q="+encodeURIComponent(name+" Korea review");
+  return "https://search.naver.com/search.naver?ssc=tab.blog.all&query="+encodeURIComponent(name+" 후기");
 }
 
 function goHome(){
-  state={query:"",detected:[],emotion:"",course:null,isDemo:false,spots:[],stamps:[],weather:"clear",dir:null};
+  state={query:"",detected:[],emotion:"",course:null,isDemo:false,spots:[],weather:"clear",dir:null};
   $("#searchInput").value="";
   setView("landing");
 }
