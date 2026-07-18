@@ -30,16 +30,22 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: `지원하지 않는 op: ${op}` });
   }
 
-  const url = new URL(`${BASE[lang === "en" ? "en" : "ko"]}/${endpoint}`);
-  url.search = new URLSearchParams({
+  // 허용된 파라미터만 통과 (serviceKey·_type 덮어쓰기, 무제한 numOfRows 등 남용 차단)
+  const ALLOWED = ["keyword", "mapX", "mapY", "radius", "contentId", "contentTypeId", "areaCode", "sigunguCode", "arrange", "pageNo", "numOfRows"];
+  const params = {
     serviceKey: key, // 공공데이터포털 "디코딩(일반)" 키 사용
     MobileOS: "ETC",
     MobileApp: "LocalLink",
     _type: "json",
-    numOfRows: "5",
-    arrange: "O", // 대표이미지 있는 항목 우선
-    ...rest,
-  });
+    numOfRows: "10",
+    arrange: "O", // 기본값: 대표이미지 있는 항목만 (검증용 검색은 클라이언트가 arrange=A로 재정의)
+  };
+  for (const k of ALLOWED) {
+    if (rest[k] != null && rest[k] !== "") params[k] = String(rest[k]);
+  }
+  params.numOfRows = String(Math.min(parseInt(params.numOfRows, 10) || 10, 20)); // 상한 20
+  const url = new URL(`${BASE[lang === "en" ? "en" : "ko"]}/${endpoint}`);
+  url.search = new URLSearchParams(params);
 
   try {
     const r = await fetch(url);
@@ -55,6 +61,7 @@ export default async function handler(req, res) {
     // 프론트에서 쓰기 좋은 형태로 축약
     const simplified = (Array.isArray(items) ? items : [items]).map((it) => ({
       contentId: it.contentid,
+      contentTypeId: String(it.contenttypeid || ""), // 12 관광지 · 14 문화시설 · 32 숙박 · 39 음식점 …
       title: it.title,
       addr: it.addr1 || "",
       mapX: parseFloat(it.mapx), // 경도
