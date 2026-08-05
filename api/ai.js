@@ -68,8 +68,9 @@ export default async function handler(req, res) {
     `학습 난이도(level): ${LEVELS[level] || "고등"}`,
     `응답 언어: ${lang === "en" ? "English" : "한국어"}`,
     // 아래 지역들은 방금 전에 이미 추천한 곳입니다. 절대 중복하지 말고 다른 지역을 고르세요.
-    avoid.length ? `이미 추천해서 제외할 지역(중복 금지): ${avoid.join(", ")}` : "",
-    `이번에는 되도록 '${eraHint}' 시대 쪽에서 새로운 곳을 우선 고려하세요(감정에 안 맞으면 다른 시대도 가능).`,
+    avoid.length ? `【중복 금지】 다음 지역들은 방금 추천했으니 이번엔 절대 고르지 마세요: ${avoid.join(", ")}` : "",
+    // 감정이 특정 사건에 강하게 쏠리므로, 이번 시대를 먼저 지정해 매번 1순위만 나오는 것을 막는다.
+    `【이번 추천 시대】 우선 '${eraHint}' 시대에서 이 감정에 맞는 사건·장소를 찾으세요. 이 시대에 도저히 없을 때만 다른 시대를 고르되, 같은 감정이라도 매번 다른 지역·다른 사건을 고르세요.`,
   ].filter(Boolean).join("\n");
 
   const model = process.env.OPENAI_MODEL || "gpt-5.4-mini";

@@ -474,8 +474,10 @@ let gen=0; // 비동기 흐름 세대 토큰 — 낡은 검색·AI 응답이 화
 
 /* ================= state ================= */
 let state={query:"",detected:[],emotion:"",level:"high",course:null,isDemo:false,spots:[],stamps:[],weather:"clear",dir:null};
-// 최근 추천한 지역 기록 — 다음 요청에 실어 보내 같은 곳 반복을 막는다 (goHome 해도 유지)
-let recentRegions=[];
+// 최근 추천한 지역 기록 — 다음 요청에 실어 보내 같은 곳 반복을 막는다.
+// localStorage에 저장해 새로고침·재방문해도 유지(빈 목록이면 모델이 매번 1순위만 반복).
+let recentRegions=(()=>{try{const a=JSON.parse(localStorage.getItem("recentRegions")||"[]");return Array.isArray(a)?a.slice(-12):[];}catch{return[];}})();
+const saveRecentRegions=()=>{try{localStorage.setItem("recentRegions",JSON.stringify(recentRegions));}catch{}};
 const MOODCLS={g:"heat",b:"bright",s:"calm"}; // 감정 그룹 → 테마
 const splitSentences=(t)=>String(t||"").split(/(?<=[.!?。”"])\s+/).map(s=>s.trim()).filter(Boolean);
 
@@ -720,6 +722,7 @@ async function generateAndRender(myGen,keepOnFail){
     recentRegions=recentRegions.filter(x=>x!==course.region);
     recentRegions.push(course.region);
     if(recentRegions.length>12)recentRegions=recentRegions.slice(-12);
+    saveRecentRegions();
   }
 
   renderDetail();
