@@ -1,10 +1,10 @@
-// api/ai.js — 로컬 링크 AI 역사 큐레이터 (Google AI Studio · Gemma 프록시)
+// api/ai.js — 로컬 링크 AI 역사 큐레이터 (OpenAI 프록시)
 // POST { query, emotion?, lang?, level? }
 // 응답: { title, region, story, quote, quoteBy, textbook, exam, keyPoints[], timeline[], hashtags[], sources[], factLevel, spots[{name, searchKeyword, why}] }
 //
 // 환경변수:
-//   GOOGLE_API_KEY  — aistudio.google.com/apikey 에서 발급 (무료 티어)
-//   GEMINI_MODEL    — 선택, 기본 gemma-3-4b-it (1b=더 가벼움, 12b=더 정확)
+//   OPENAI_API_KEY  — platform.openai.com/api-keys 에서 발급
+//   OPENAI_MODEL    — 선택, 기본 gpt-5-mini
 //
 // 참고: 여행지(spots)는 프론트에서 한국관광공사 TourAPI로 검증·교체되므로,
 //       AI는 지역(region)과 후보 명칭만 잘 주면 됩니다.
@@ -39,57 +39,65 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "POST만 지원합니다." });
   }
-  const apiKey = process.env.GOOGLE_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "GOOGLE_API_KEY가 설정되지 않았습니다. (aistudio.google.com/apikey)" });
+    return res.status(500).json({ error: "OPENAI_API_KEY가 설정되지 않았습니다. (platform.openai.com/api-keys)" });
   }
 
-  let { query = "", emotion = "", lang = "ko", level = "high" } = req.body ?? {};
+  let { query = "", emotion = "", lang = "ko", level = "high", avoid = [] } = req.body ?? {};
   // 타입·길이 제한: 초대형 입력으로 토큰 비용을 키우거나 객체 주입하는 것 방지
   query = String(query).slice(0, 300);
   emotion = String(emotion).slice(0, 100);
   lang = lang === "en" ? "en" : "ko";
   level = String(level).slice(0, 20);
+  // avoid: 프론트가 보낸 최근 추천 지역 목록 — 중복 회피용. 문자열 최대 12개, 각 40자.
+  avoid = Array.isArray(avoid)
+    ? avoid.map((x) => String(x).slice(0, 40)).filter(Boolean).slice(0, 12)
+    : [];
   if (!query && !emotion) {
     return res.status(400).json({ error: "query 또는 emotion이 필요합니다." });
   }
 
   const LEVELS = { middle: "중등", high: "고등", exam: "수능", adult: "성인 교양" };
+  // 시대를 매번 무작위로 하나 짚어줘 특정 사건 쏠림을 완화한다.
+  const ERAS = ["고대(삼국·가야·통일신라)", "고려", "조선 전기", "조선 후기", "개항기", "일제강점기", "현대(광복 이후)"];
+  const eraHint = ERAS[Math.floor(Math.random() * ERAS.length)];
   const user = [
     emotion ? `선택한 감정: ${emotion}` : "",
     query ? `여행 조건/요청: ${query}` : "",
     `학습 난이도(level): ${LEVELS[level] || "고등"}`,
     `응답 언어: ${lang === "en" ? "English" : "한국어"}`,
+    // 아래 지역들은 방금 전에 이미 추천한 곳입니다. 절대 중복하지 말고 다른 지역을 고르세요.
+    avoid.length ? `이미 추천해서 제외할 지역(중복 금지): ${avoid.join(", ")}` : "",
+    `이번에는 되도록 '${eraHint}' 시대 쪽에서 새로운 곳을 우선 고려하세요(감정에 안 맞으면 다른 시대도 가능).`,
   ].filter(Boolean).join("\n");
 
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-  // Gemini 계열은 JSON 강제(responseMimeType) + thinking 끄기로 안정적인 순수 JSON을 받는다.
-  const generationConfig = { temperature: 0.9, maxOutputTokens: 3000 };
-  if (model.startsWith("gemini")) {
-    generationConfig.responseMimeType = "application/json";
-    generationConfig.thinkingConfig = { thinkingBudget: 0 };
-  }
+  const model = process.env.OPENAI_MODEL || "gpt-5.4-mini";
+  const url = "https://api.openai.com/v1/chat/completions";
 
   try {
     const r = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
       body: JSON.stringify({
-        // system 역할 없이 지시문을 user 파트에 함께 넣습니다 (Gemma/Gemini 공통).
-        contents: [{ role: "user", parts: [{ text: `${SYSTEM}\n\n---\n${user}` }] }],
-        generationConfig,
+        model,
+        messages: [
+          { role: "system", content: SYSTEM },
+          { role: "user", content: user },
+        ],
+        response_format: { type: "json_object" },
+        max_completion_tokens: 3000,
       }),
     });
     const data = await r.json();
     if (!r.ok) {
-      return res.status(502).json({ error: "Gemma API 오류", detail: data?.error?.message });
+      return res.status(502).json({ error: "OpenAI API 오류", detail: data?.error?.message });
     }
-    const text = (data?.candidates?.[0]?.content?.parts ?? [])
-      .map((p) => p.text || "")
-      .join("");
-    // 소형 모델은 앞뒤에 잡소리가 붙을 수 있어, 첫 { ~ 마지막 } 만 잘라 파싱합니다.
+    const text = data?.choices?.[0]?.message?.content || "";
+    // 혹시 모를 잡소리 대비, 첫 { ~ 마지막 } 만 잘라 파싱합니다.
     const clean = text.replace(/```json|```/g, "").trim();
     const s = clean.indexOf("{");
     const e = clean.lastIndexOf("}");
