@@ -239,6 +239,23 @@ html[lang="en"] .emo{font-size:14.5px;}
 .pullquote cite{display:block;margin-top:8px;font-size:12px;font-weight:400;font-style:normal;color:var(--gray);}
 .sources{margin-top:14px;font-size:11.5px;color:var(--lgray);line-height:1.7;}
 
+/* ===== 이야기 화면: 흑백 선화 + 지나가는 문장 ===== */
+#view-tale.on{position:fixed;inset:0;z-index:300;display:flex;background:#f3eee4;overflow:auto;}
+.tale{margin:auto;width:100%;max-width:620px;padding:32px 16px 64px;display:flex;flex-direction:column;align-items:center;color:#111;}
+.tale-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:600;letter-spacing:.32em;text-align:center;opacity:0;transition:opacity 1.6s ease;}
+.tale.go .tale-title{opacity:.8;}
+.tale-art{width:min(440px,88vw);height:auto;margin:26px 0 30px;overflow:visible;}
+.tale-art path{fill:none;stroke:#111;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.tale-lines{position:relative;width:100%;height:3.8em;font-family:'Noto Serif KR',serif;font-size:14px;line-height:1.85;text-align:center;overflow:hidden;}
+.tale-line{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 8px;opacity:0;animation:taleLine var(--d) ease forwards;}
+@keyframes taleLine{0%{opacity:0;transform:translateY(12px);}15%{opacity:1;transform:none;}80%{opacity:1;transform:none;}100%{opacity:0;transform:translateY(-12px);}}
+.tale-skip{position:fixed;right:20px;bottom:18px;background:none;border:none;border-bottom:1px solid #111;color:#111;font-size:12px;letter-spacing:.12em;padding:2px 0;opacity:.55;transition:opacity .2s;}
+.tale-skip:hover,.tale-skip:focus-visible{opacity:1;}
+@media(prefers-reduced-motion:reduce){
+  .tale-art path{transition:none!important;}
+  @keyframes taleLine{0%{opacity:0;}15%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+}
+
 /* ===== 사건의 흐름 (timeline) ===== */
 .timeline{display:flex;gap:0;overflow-x:auto;padding:8px 2px 2px;}
 .tl-item{flex:1;min-width:140px;position:relative;padding:18px 16px 4px 0;border-top:2px solid var(--line2);}
@@ -344,6 +361,19 @@ html[lang="en"] .emo{font-size:14.5px;}
 </section>
 
 <!-- DETAIL -->
+<!-- ============ 이야기 (감정 선택 직후, 흑백 선화 + 문장) ============ -->
+<section class="view" id="view-tale">
+  <div class="tale" id="taleRoot">
+    <div class="tale-title" id="taleTitle"></div>
+    <svg class="tale-art" viewBox="0 0 400 260" aria-hidden="true">
+      <defs><filter id="inkF" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="1.5"/></filter></defs>
+      <g id="taleG" filter="url(#inkF)"></g>
+    </svg>
+    <div class="tale-lines" id="taleLines" aria-live="polite"></div>
+  </div>
+  <button class="tale-skip" id="taleSkip" type="button"></button>
+</section>
+
 <section class="view" id="view-detail">
   <div class="wrap detail">
     <button class="back-link" id="backToEmotions" data-i18n="backEmotion">← 다른 감정 선택</button>
@@ -372,7 +402,7 @@ const DICT={
     chips:["1박2일 친구와 깊이 있는 역사 여행","혼자 가볍게 감성 산책","가족이랑 당일치기 교육 여행","연인과 사진 찍기 좋은 역사 투어"],
     searching:"AI가 문장 속 의도를 읽고, 어울리는 역사를 찾고 있어요…",
     searchingAll:"전체 역사를 살펴보는 중…",
-    generatingSub:"감정에 맞는 이야기와 장소를 준비하고 있어요…",
+    generatingSub:"감정에 맞는 이야기와 장소를 준비하고 있어요…",taleSkip:"건너뛰기 →",
     understoodH:"이렇게 이해했어요",
     emH2:"어떤 감정으로<br/>역사를 만나볼까요?",
     emSub:"같은 역사도, 감정에 따라 다른 이야기와 장소로 안내해요.",
@@ -422,7 +452,7 @@ const DICT={
     chips:["2-day deep history trip with a friend","Solo, light and sentimental walk","Family day trip for learning","Photogenic history tour with a partner"],
     searching:"AI is reading your intent and finding matching history…",
     searchingAll:"Scanning all of Korean history…",
-    generatingSub:"Preparing a story and places that match your feeling…",
+    generatingSub:"Preparing a story and places that match your feeling…",taleSkip:"Skip →",
     understoodH:"Here’s what we understood",
     emH2:"Which feeling will you<br/>meet history with?",
     emSub:"The same history leads to different stories and places, depending on the feeling.",
@@ -560,6 +590,7 @@ const DEMO={
   title:"있는데 또 만들어서, 이중으로 뜯었다",region:"전북 정읍",
   factLevel:"confirmed",
   story:"고부군수 조병갑은 이미 보가 있는데도 농민을 강제 동원해 새 둑을 쌓았다. 완공 후에는 물세를 이중으로 징수했다. 착복한 쌀만 700석. 견디다 못한 농민 1,000여 명이 전봉준을 앞세워 이 만석보를 때려부쉈다. 혁명은 이렇게 둑 하나에서 시작됐다.",
+  fiction:{title:"물세 두 번",scene:"village",text:"아버지는 그날 밤 볏섬을 세다 말고 등잔을 껐다. \"또 내라더라. 보 쓴 값을.\" 어머니의 숨소리만 어둠 속에서 길게 흔들렸다. 나는 새로 쌓은 둑이 달빛에 하얗게 빛나던 것을 떠올렸다. 동네 사내들이 품삯 한 푼 없이 흙을 져 나른 둑이었다. 이듬해 정월, 새벽 공기가 유난히 찼다. 아버지는 괭이를 메고 문지방에서 한 번 돌아보았다. \"금방 온다.\" 들판 저편에서 횃불이 하나둘 늘어나 강물처럼 이어졌다. 멀리서 둑이 무너지는 소리가 들렸다. 그날 아침 아버지의 등은, 처음으로 조금도 굽어 있지 않았다."},
   quote:"우리가 의(義)를 들어 여기에 이른 것은, 백성을 도탄에서 건지고 나라를 반석 위에 두고자 함이라.",
   quoteBy:"동학농민군 백산 격문, 1894",
   textbook:"“고부 군수 조병갑의 횡포에 반발하여 전봉준을 중심으로 농민 봉기가 발생하였다.” — 한국사 교과서, 동학농민운동 단원.",
@@ -693,6 +724,88 @@ async function pickEmotion(i){
   await generateAndRender(++gen);
 }
 
+/* ===== 이야기 화면: 장면별 흑백 선화 (viewBox 400×260) =====
+ * 배열 순서대로 한 획씩 그려진다 — 땅 → 큰 형태 → 세부. */
+const circ=(cx,cy,r)=>`M${cx+r} ${cy} A${r} ${r} 0 1 1 ${cx-r} ${cy} A${r} ${r} 0 1 1 ${cx+r} ${cy}`;
+const waves=(y,amp=7)=>{let d=`M0 ${y}`;for(let x=0;x<400;x+=40)d+=` q10 ${-amp} 20 0 t20 0`;return d;};
+const pine=(x,g)=>[`M${x} ${g} Q${x-4} ${g-32} ${x+6} ${g-62} Q${x+10} ${g-82} ${x+4} ${g-100}`,
+  `M${x-34} ${g-66} q10 -9 22 -5 q12 -8 24 -2 q12 -4 20 6 L${x-34} ${g-66}`,
+  `M${x-20} ${g-90} q9 -8 20 -4 q11 -7 22 0 q8 -2 12 6 L${x-20} ${g-90}`,
+  `M${x-10} ${g-110} q8 -7 16 -3 q9 -5 16 3 L${x-10} ${g-110}`];
+const hanokRoof=(l,r,y)=>`M${l} ${y+10} Q${l+20} ${y+14} ${l+40} ${y} L${r-40} ${y} Q${r-20} ${y+14} ${r} ${y+10}`;
+const SCENES={
+  mountain:()=>["M10 222 L390 222","M20 200 Q80 110 140 170 Q190 90 260 160 Q320 110 380 190",circ(312,62,20),...pine(92,222),
+    "M180 236 L240 236","M220 246 L300 246","M150 246 L190 246"],
+  village:()=>["M10 220 L390 220","M10 140 Q70 70 130 120 Q190 50 260 110 Q320 70 390 130",circ(330,58,16),
+    hanokRoof(60,220,158),"M100 158 Q140 146 180 158","M84 170 L84 218","M196 170 L196 218","M130 218 L130 186 L150 186 L150 218",
+    hanokRoof(240,342,182),"M256 192 L256 218","M326 192 L326 218","M20 234 Q120 228 200 236","M60 248 Q180 240 330 250"],
+  fortress:()=>{let top="M20 170";for(let x=20;x<380;x+=20)top+=` L${x} 160 L${x+10} 160 L${x+10} 170 L${x+20} 170`;
+    return["M5 222 L395 222",top,"M20 170 L20 222","M380 170 L380 222","M170 222 L170 190 Q200 164 230 190 L230 222",
+    "M160 160 L160 132","M240 160 L240 132",hanokRoof(140,260,122),"M172 122 Q200 110 228 122",
+    "M40 195 L130 195","M270 195 L360 195","M60 208 L145 208","M255 208 L350 208","M250 122 L250 78","M250 80 L282 88 L250 96"];},
+  pagoda:()=>{const out=["M10 222 L390 222","M160 222 L240 222 L236 206 L164 206 Z"];let y=206,w=64;
+    for(let i=0;i<4;i++){out.push(`M${200-w/2+6} ${y} L${200-w/2+6} ${y-16}`,`M${200+w/2-6} ${y} L${200+w/2-6} ${y-16}`,
+      `M${200-w/2-6} ${y-14} Q200 ${y-24} ${200+w/2+6} ${y-14}`);y-=22;w-=10;}
+    out.push(`M200 ${y+6} L200 ${y-22}`,circ(200,y-6,4),...pine(74,222),"M284 70 q12 -14 26 -2 q10 -12 24 0 q14 -2 12 10 L282 78 q-10 -2 2 -8");return out;},
+  sea:()=>[waves(204),"M130 196 Q200 214 270 196 L256 178 L144 178 Z","M200 178 L200 88","M200 94 Q248 130 204 170",
+    "M166 178 L166 118","M166 122 Q138 148 168 170",waves(222,6),waves(240,5),"M60 70 q8 -8 16 0 q8 -8 16 0","M100 52 q6 -6 12 0 q6 -6 12 0",
+    "M312 120 A26 26 0 0 1 364 120"],
+  palace:()=>["M10 224 L390 224","M120 222 L280 222","M130 214 L270 214","M110 206 L290 206",
+    ...[140,170,200,230,260].map(x=>`M${x} 206 L${x} 150`),"M130 150 L270 150",hanokRoof(88,312,146),
+    "M150 146 L150 130","M250 146 L250 130",hanokRoof(110,290,118),"M142 118 Q200 104 258 118"],
+  city:()=>["M5 222 L395 222","M30 222 L30 122 L90 122 L90 222","M100 222 L100 92 L150 92 L150 222",
+    "M200 222 L200 140 L240 140 L240 222","M210 140 L210 102 L230 102 L230 140","M206 102 L220 80 L234 102",circ(220,120,7),
+    ...[140,160,180,200].map(y=>`M40 ${y} L80 ${y}`),...[110,130,150,170,190].map(y=>`M110 ${y} L140 ${y}`),
+    "M290 222 L290 100","M280 110 L300 110","M370 222 L370 110","M360 120 L380 120","M290 104 Q330 126 370 114",
+    circ(318,196,5),"M318 201 L318 222",circ(338,198,5),"M338 203 L338 222","M338 203 L338 168 L358 174 L338 180"],
+};
+function pickScene(c){
+  const s=c.fiction&&c.fiction.scene;if(SCENES[s])return s;
+  const t=`${c.title||""} ${c.story||""} ${c.region||""}`;
+  const rules=[["sea",/바다|해전|수군|거북선|섬|포구|sea|naval/i],["fortress",/성곽|산성|화성|전투|항쟁|의병|fortress|battle/i],
+    ["pagoda",/탑|사찰|불국사|석굴암|대장경|temple|pagoda/i],["palace",/궁궐|왕릉|종묘|왕실|palace|royal/i],
+    ["city",/개항|일제|독립|만세|학생|민주|근대|19[0-9]{2}|20[0-9]{2}/i],["village",/마을|농민|동학|들판|village|farm/i]];
+  for(const[k,re]of rules)if(re.test(t))return k;
+  return "mountain";
+}
+/* 감정 선택 직후, 이야기만 보여주는 화면. 끝나거나 건너뛰면 resolve. */
+function playTale(c,myGen){
+  return new Promise(resolve=>{
+    const f=c.fiction||{},lines=splitSentences(f.text).slice(0,14);
+    if(!lines.length)return resolve();
+    const root=$("#taleRoot"),box=$("#taleLines"),g=$("#taleG"),skip=$("#taleSkip");
+    const timers=[];let done=false;
+    const end=()=>{if(done)return;done=true;timers.forEach(clearTimeout);document.removeEventListener("keydown",onKey);resolve();};
+    const onKey=(e)=>{if(e.key==="Escape"||e.key==="Enter")end();};
+    $("#taleTitle").textContent=f.title||"";
+    skip.textContent=D().taleSkip;skip.onclick=end;
+    document.addEventListener("keydown",onKey);
+    root.classList.remove("go");box.innerHTML="";
+    setView("tale");
+
+    // 문장별 노출 시간(글자 수 비례) — 전체 길이에 맞춰 그림을 한 획씩 그린다
+    const durs=lines.map(s=>Math.min(5600,Math.max(2600,s.length*95)));
+    const total=durs.reduce((a,b)=>a+b,0);
+    g.innerHTML=SCENES[pickScene(c)]().map(d=>`<path d="${d}"/>`).join("");
+    const paths=[...g.querySelectorAll("path")],step=total*.9/paths.length;
+    paths.forEach(p=>{const L=Math.ceil(p.getTotalLength())+1;p.style.strokeDasharray=L;p.style.strokeDashoffset=L;});
+    g.getBoundingClientRect(); // 초기 상태 확정 후 전환 시작
+    paths.forEach((p,i)=>{p.style.transition=`stroke-dashoffset ${Math.max(600,step*1.6)}ms ease-in-out ${i*step}ms`;p.style.strokeDashoffset=0;});
+    requestAnimationFrame(()=>root.classList.add("go"));
+
+    let t=500;
+    lines.forEach((s,i)=>{
+      timers.push(setTimeout(()=>{
+        if(myGen!==gen)return end();
+        const el=document.createElement("div");el.className="tale-line";el.style.setProperty("--d",durs[i]+"ms");el.textContent=s;
+        box.replaceChildren(el);
+      },t));
+      t+=durs[i];
+    });
+    timers.push(setTimeout(end,t+1400)); // 마지막 문장이 지나간 뒤 그림을 잠시 남겨둔다
+  });
+}
+
 /* 이야기·장소 생성 → TourAPI 보강 → 상세 렌더 (감정선택·난이도변경 공용)
  * myGen: 세대 토큰 — goHome/새 요청이 발생하면 낡은 흐름은 조용히 중단
  * keepOnFail: 난이도 변경처럼 기존 코스가 있을 때, AI 실패 시 DEMO로 덮지 않고 유지 */
@@ -711,7 +824,13 @@ async function generateAndRender(myGen,keepOnFail){
   if(myGen!==gen)return;
 
   // TourAPI 그라운딩: 실제 존재하는 장소만 남기고, 부족하면 지역 목록으로 채운다
-  let spots=await groundSpots(course);
+  // (감정 선택으로 새로 만든 경우, 그라운딩하는 동안 이야기 화면을 먼저 보여준다)
+  const groundP=groundSpots(course);
+  if(!keepOnFail&&course.fiction&&course.fiction.text){
+    await playTale(course,myGen);
+    if(myGen!==gen)return;
+  }
+  let spots=await groundP;
   if(myGen!==gen)return;
 
   state.course=course;state.isDemo=isDemo;state.spots=spots;

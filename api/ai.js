@@ -1,6 +1,6 @@
 // api/ai.js — 로컬 링크 AI 역사 큐레이터 (OpenAI 프록시)
 // POST { query, emotion?, lang?, level? }
-// 응답: { title, region, story, quote, quoteBy, textbook, exam, keyPoints[], timeline[], hashtags[], sources[], factLevel, spots[{name, searchKeyword, why}] }
+// 응답: { title, region, story, fiction{title,scene,text}, quote, quoteBy, textbook, exam, keyPoints[], timeline[], hashtags[], sources[], factLevel, spots[{name, searchKeyword, why}] }
 //
 // 환경변수:
 //   OPENAI_API_KEY  — platform.openai.com/api-keys 에서 발급
@@ -31,9 +31,10 @@ const SYSTEM = `당신은 '로컬 링크'의 AI 역사 여행 큐레이터입니
 8. level(중등/고등/수능/교양)에 맞춰 어휘와 깊이를 조절합니다.
 9. spots는 2~4곳. searchKeyword는 한국관광공사 관광정보에 잘 검색되는 공식 명칭(예: "수원화성", "불국사", "광성보", "하회마을", "군산근대역사박물관"). 정확한 명칭을 모르면 그 지역의 대표 유적·기념관 명칭을 씁니다. (일부는 실제 관광정보로 자동 교체될 수 있습니다.)
 10. 영어(lang=en)면 모든 텍스트를 영어로 쓰되 searchKeyword는 반드시 한국어 공식 명칭을 유지합니다.
+11. fiction은 이 사건을 배경으로 한 짧은 소설입니다(이 항목만 예외적으로 허구 허용). {"title":"짧은 소설 제목","scene":"장면","text":"8~12문장"}. 한 문장은 60자 이내로 짧게 씁니다. scene은 이야기 배경에 가장 가까운 것 하나: "village"(농촌·마을), "fortress"(성곽·전투), "pagoda"(탑·사찰), "sea"(바다·해전·섬), "palace"(궁궐·왕실·왕릉), "city"(개항기 이후 거리·근현대), "mountain"(산·서원·그 밖). 그 시대를 살았던 평범한 가상 인물(이름 없는 농민·아이·병사·상인 등)의 1인칭 또는 3인칭 시점으로, 오감이 느껴지는 한 장면을 그립니다. 첫 두 문장은 뒷이야기가 궁금해지도록 강하게 시작하세요. 실존 인물의 대사·행동을 새로 지어내지 말고, 배경이 되는 사건·연도·장소는 story와 일치시킵니다.
 
 반드시 아래 JSON 형식으로만 응답합니다. 마크다운 코드블록·설명 문장 없이 순수 JSON만 출력합니다:
-{"title":"...","region":"...","factLevel":"confirmed","story":"...","quote":"...","quoteBy":"...","textbook":"...","exam":{"meta":"...","q":"..."},"keyPoints":["..",".."],"timeline":[{"y":"..","t":".."}],"hashtags":["#..","#.."],"sources":["..",".."],"spots":[{"name":"...","searchKeyword":"...","why":"..."}]}`;
+{"title":"...","region":"...","factLevel":"confirmed","story":"...","fiction":{"title":"...","scene":"...","text":"..."},"quote":"...","quoteBy":"...","textbook":"...","exam":{"meta":"...","q":"..."},"keyPoints":["..",".."],"timeline":[{"y":"..","t":".."}],"hashtags":["#..","#.."],"sources":["..",".."],"spots":[{"name":"...","searchKeyword":"...","why":"..."}]}`;
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -90,7 +91,7 @@ export default async function handler(req, res) {
           { role: "user", content: user },
         ],
         response_format: { type: "json_object" },
-        max_completion_tokens: 3000,
+        max_completion_tokens: 4000,
       }),
     });
     const data = await r.json();
