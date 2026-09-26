@@ -5,296 +5,349 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>로컬 링크 — Local Link · AI History Curator</title>
 <meta name="description" content="어떤 감정으로 역사를 만나볼까요? 감정으로 진입해 서사로 몰입하는 AI 역사 여행."/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230f88c4'/><text x='50' y='73' font-size='58' text-anchor='middle' fill='white' font-family='serif' font-weight='bold'>ㄹ</text></svg>"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23141412'/><text x='50' y='73' font-size='58' text-anchor='middle' fill='white' font-family='serif' font-weight='bold'>ㄹ</text></svg>"/>
+<meta name="theme-color" content="#f5f3ec"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="로컬 링크 — AI 역사 여행 큐레이터"/>
+<meta property="og:description" content="감정으로 진입해 서사로 몰입하는 AI 역사 여행. 이야기와 장소, 가는 길까지 한 번에."/>
+<meta property="og:locale" content="ko_KR"/>
+<meta name="twitter:card" content="summary"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;600;700;900&display=swap" rel="stylesheet"/>
 <style>
+/* ===== Local Link — editorial cards =====
+ * 큰 활자·번호 섹션(매거진) + 둥근 카드·부드러운 그림자·감정색 다크 패널(기존)의 중간.
+ * 강조색은 한 가지이고, 감정 테마에 따라 바뀐다. */
 :root{
-  /* warm paper editorial palette */
-  --paper:#f7f3ec;--paper2:#efe7d9;--card:#fffdf9;--ink:#1b1714;--ink2:#3c352e;
-  --gray:#6f685e;--lgray:#766c5e;--line:#e5dccd;--line2:#d8cebc; /* lgray 4.66:1 — WCAG AA */
-  /* dual accent: sky (the way / link) + amber (emotion / history) */
-  --sky:#0f88c4;--skydk:#0a5f8a;--skysoft:#e4f1f8;
-  --amber:#c8631e;--amberdk:#9c4a12;--ambersoft:#f6e8d8;
-  --radius:18px;
-  --sh-sm:0 1px 2px rgba(27,23,20,.04),0 2px 5px rgba(27,23,20,.06);
-  --sh-md:0 2px 4px rgba(27,23,20,.05),0 8px 22px -6px rgba(27,23,20,.14);
-  --sh-lg:0 4px 8px rgba(27,23,20,.06),0 22px 50px -12px rgba(27,23,20,.22);
+  --bg:#f5f3ec;--card:#fffdf8;--bg2:#ebe8df;--ink:#161512;--ink2:#36342f;--mute:#6b6962;--hair:#e0dcd0;
+  /* 감정별 강조색 — 채도 80% 이하 */
+  --heat:#cc3d1c;--bright:#2352c4;--calm:#4c6a58;
+  --acc:var(--heat);
+  --acc-soft:color-mix(in oklab,var(--acc) 11%,var(--card));
+  /* 다크 패널 — 강조색으로 물든 먹색 */
+  --deep:color-mix(in oklab,var(--acc) 26%,#131210);
+  --deep2:color-mix(in oklab,var(--acc) 48%,#131210);
+  --radius:20px;
+  --sh-sm:0 1px 2px rgba(40,34,20,.05),0 2px 6px rgba(40,34,20,.05);
+  --sh-md:0 2px 4px rgba(40,34,20,.05),0 10px 24px -8px rgba(40,34,20,.15);
+  --sh-lg:0 4px 8px rgba(40,34,20,.06),0 24px 50px -14px rgba(40,34,20,.24);
+  --sans:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --serif:'Noto Serif KR',serif;
+  --mono:'JetBrains Mono','Pretendard Variable',Pretendard,ui-monospace,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --z-top:50;--z-overlay:90;--z-toast:95;--z-tale:300;--z-skip:400;
 }
+:root[data-mood="heat"]{--acc:var(--heat);}
+:root[data-mood="bright"]{--acc:var(--bright);}
+:root[data-mood="calm"]{--acc:var(--calm);}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:var(--paper);line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-.disp{font-family:'Black Han Sans',sans-serif;font-weight:400;letter-spacing:.005em;}
-.serif{font-family:'Noto Serif KR',serif;}
-html[lang="en"] .disp{font-family:'Noto Sans KR',sans-serif;font-weight:900;letter-spacing:-.02em;}
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
-button{font-family:inherit;cursor:pointer;}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;word-break:keep-all;}
+/* 종이 질감 — 고정 그레인 레이어 */
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:var(--z-overlay);opacity:.03;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+h1,h2,h3{text-wrap:balance;}
+p{text-wrap:pretty;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px);}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+button:active:not(:disabled){transform:translateY(1px) scale(.985);}
 a{color:inherit;text-decoration:none;}
-:focus-visible{outline:3px solid var(--sky);outline-offset:2px;border-radius:4px;}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px;}
+.mono{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.01em;}
+.num{font-variant-numeric:tabular-nums;}
+.skip-link{position:fixed;left:16px;top:-60px;z-index:var(--z-skip);background:var(--ink);color:var(--bg);font-size:13px;font-weight:600;padding:10px 16px;border-radius:10px;transition:top .2s var(--ease);}
+.skip-link:focus{top:12px;}
+
+/* 텍스트 링크 — 호버 시 밑줄이 왼쪽에서 그려진다 */
+.tlink{font-size:14px;font-weight:600;padding:4px 0;background-image:linear-gradient(currentColor,currentColor);background-size:0 1px;background-repeat:no-repeat;background-position:0 100%;transition:background-size .3s var(--ease),color .2s;}
+.tlink:hover{background-size:100% 1px;color:var(--acc);}
+.back-link{font-family:var(--mono);font-size:12px;color:var(--mute);padding:6px 0;transition:color .2s;}
+.back-link:hover{color:var(--ink);}
+.btn{background:var(--ink);color:var(--bg);font-size:14px;font-weight:700;padding:14px 22px;border-radius:12px;box-shadow:var(--sh-sm);transition:background .2s,transform .2s var(--ease),box-shadow .2s;}
+.btn:hover{background:var(--acc);transform:translateY(-1px);box-shadow:var(--sh-md);}
 
 /* reveal-on-scroll */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
 .reveal.in{opacity:1;transform:none;}
 
 /* ---------- topbar ---------- */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(247,243,236,.82);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line);}
-.topbar .row{display:flex;justify-content:space-between;align-items:center;height:66px;gap:10px;}
-.brand{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer;background:none;border:none;padding:0;}
-.brand .mk{width:34px;height:34px;border-radius:10px;background:linear-gradient(150deg,var(--sky),var(--skydk));color:#fff;display:grid;place-items:center;font-family:'Noto Serif KR';font-weight:900;font-size:17px;box-shadow:var(--sh-sm);}
-.brand b{font-size:18px;font-weight:900;letter-spacing:-.01em;}
-.brand .tag{font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--lgray);text-transform:uppercase;margin-left:2px;}
-@media(max-width:540px){.brand .tag{display:none;}}
-.top-actions{display:flex;align-items:center;gap:10px;}
-.btn-new{border:none;background:var(--ink);color:var(--paper);font-size:13px;font-weight:600;border-radius:10px;padding:10px 16px;transition:.18s;box-shadow:var(--sh-sm);}
-.btn-new:hover{background:var(--amber);transform:translateY(-1px);}
-.lang{display:flex;border:1.5px solid var(--line2);border-radius:999px;overflow:hidden;flex-shrink:0;background:var(--card);}
-.lang button{border:none;background:transparent;font-size:12px;font-weight:800;padding:7px 13px;color:var(--lgray);transition:.18s;letter-spacing:.04em;}
-.lang button.on{background:var(--ink);color:var(--paper);}
+.topbar{position:sticky;top:0;z-index:var(--z-top);background:color-mix(in oklab,var(--bg) 86%,transparent);backdrop-filter:saturate(1.3) blur(12px);border-bottom:1px solid var(--hair);}
+.topbar .row{display:flex;justify-content:space-between;align-items:center;height:62px;gap:16px;}
+.brand{display:flex;align-items:center;gap:12px;padding:0;}
+.brand:before{content:"";width:12px;height:12px;border-radius:3px;background:var(--acc);transition:background .4s;}
+.brand b{font-size:19px;font-weight:800;letter-spacing:-.035em;}
+.brand .tag{color:var(--mute);}
+@media(max-width:600px){.brand .tag{display:none;}}
+.top-actions{display:flex;align-items:center;gap:22px;}
+.lang{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--hair);}
+.lang button{padding:6px 2px;color:var(--mute);transition:color .2s;}
+.lang button.on{color:var(--ink);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1.5px;text-decoration-color:var(--acc);}
 .lang button:not(.on):hover{color:var(--ink);}
 
 /* ---------- views ---------- */
 .view{display:none;}
 .view.on{display:block;}
 
-/* ---------- landing / hero ---------- */
-.hero{position:relative;overflow:hidden;padding:104px 24px 96px;text-align:center;min-height:calc(100vh - 66px);display:flex;flex-direction:column;justify-content:center;}
-.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(15,136,196,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(15,136,196,.06) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(74% 66% at 50% 42%,#000,transparent);}
-.hero-glow{position:absolute;left:50%;top:44%;width:min(720px,92vw);height:440px;transform:translate(-50%,-50%);background:radial-gradient(50% 50% at 50% 50%,rgba(200,99,30,.16),transparent 70%);filter:blur(10px);pointer-events:none;}
-.hero>*{position:relative;z-index:2;}
-/* 배경 레이어는 항상 글씨 뒤(z-index:0)에 — .hero>* 규칙보다 우선순위 높게 */
-.hero>.hero-grid-bg,.hero>.hero-glow{position:absolute;z-index:0;}
-.pill{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800;color:var(--skydk);background:var(--card);border:1px solid var(--line2);border-radius:999px;padding:8px 17px;margin:0 auto;box-shadow:var(--sh-sm);letter-spacing:.01em;}
-.pill .d{width:7px;height:7px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 4px rgba(15,136,196,.16);animation:pulse 2.4s ease-in-out infinite;}
-@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(15,136,196,0);}}
-.hero h1{margin-top:26px;font-size:clamp(36px,6.6vw,70px);line-height:1.14;letter-spacing:-.01em;}
-html[lang="en"] .hero h1{font-size:clamp(30px,5.4vw,56px);line-height:1.12;}
-.hero h1 .sky{color:var(--sky);}
-.hero h1 .amb{color:var(--amber);}
-.hero .sub{margin-top:22px;font-size:clamp(15px,1.9vw,18px);color:var(--gray);max-width:540px;margin-left:auto;margin-right:auto;}
-.searchbox{margin:40px auto 0;max-width:660px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:9px 9px 9px 22px;box-shadow:var(--sh-lg);text-align:left;transition:.2s;}
-.searchbox:focus-within{border-color:var(--sky);box-shadow:var(--sh-lg),0 0 0 4px rgba(15,136,196,.12);}
-.searchbox input{flex:1;border:none;outline:none;font-family:inherit;font-size:16.5px;min-width:0;padding:13px 0;background:transparent;color:var(--ink);}
-.searchbox input::placeholder{color:var(--lgray);}
-.searchbox .go{border:none;border-radius:14px;background:var(--ink);color:var(--paper);font-size:15px;font-weight:700;padding:15px 26px;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
-.searchbox .go:hover{background:var(--sky);transform:translateY(-1px);}
-.search-hint{margin-top:18px;font-size:12.5px;color:var(--lgray);}
-.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;justify-content:center;}
-.chip{font-size:12.5px;border:1px solid var(--line2);background:var(--card);color:var(--gray);padding:9px 15px;border-radius:999px;transition:.18s;box-shadow:var(--sh-sm);}
-.chip:hover{border-color:var(--sky);color:var(--skydk);background:var(--skysoft);transform:translateY(-2px);}
+/* ---------- landing ---------- */
+#view-landing{position:relative;overflow:hidden;}
+/* 은은한 감정색 빛 — 평평한 바탕에 깊이 */
+#view-landing:before{content:"";position:absolute;right:-12%;top:-8%;width:min(820px,70vw);aspect-ratio:1;background:radial-gradient(closest-side,color-mix(in oklab,var(--acc) 15%,transparent),transparent);pointer-events:none;}
+#view-landing:after{content:"";position:absolute;left:-14%;bottom:8%;width:min(560px,55vw);aspect-ratio:1;background:radial-gradient(closest-side,color-mix(in oklab,var(--calm) 12%,transparent),transparent);pointer-events:none;}
+#view-landing>.wrap{position:relative;z-index:1;}
+.hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;row-gap:36px;align-content:space-between;min-height:calc(100vh - 63px);min-height:calc(100dvh - 63px);padding:26px 0 56px;}
+.hero-meta{grid-column:1/-1;display:flex;justify-content:space-between;gap:16px;color:var(--mute);padding-bottom:14px;border-bottom:1px solid var(--hair);}
+.hero-h{grid-column:1/-1;align-self:center;font-size:clamp(34px,6.6vw,100px);font-weight:800;line-height:1.05;letter-spacing:-.05em;}
+html[lang="en"] .hero-h{font-size:clamp(30px,5.6vw,86px);letter-spacing:-.045em;line-height:1.02;}
+/* "보는" 여행에 줄을 긋고, "걷는" 여행에 강조색 */
+.hero-h .sky{color:var(--mute);text-decoration:line-through;text-decoration-thickness:.055em;text-decoration-color:var(--acc);}
+.hero-h .amb{color:var(--acc);}
+.hero-sub{grid-column:1/span 4;align-self:end;font-size:16px;color:var(--ink2);max-width:28em;}
+.search-col{grid-column:6/-1;}
+@media(max-width:860px){.hero-sub,.search-col{grid-column:1/-1;}}
+.searchbox{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--hair);border-radius:18px;padding:8px 8px 8px 22px;box-shadow:var(--sh-lg);transition:border-color .2s,box-shadow .2s;}
+.searchbox:focus-within{border-color:var(--acc);box-shadow:var(--sh-lg),0 0 0 4px color-mix(in oklab,var(--acc) 14%,transparent);}
+.searchbox input{flex:1;min-width:0;border:none;outline:none;background:transparent;font:inherit;font-size:clamp(16px,1.6vw,19px);font-weight:500;letter-spacing:-.015em;padding:13px 0;color:var(--ink);}
+.searchbox input::placeholder{color:var(--mute);opacity:.85;}
+.searchbox .go{background:var(--ink);color:var(--bg);font-size:14.5px;font-weight:700;padding:15px 24px;border-radius:12px;white-space:nowrap;transition:background .2s,transform .2s var(--ease);}
+.searchbox .go:hover{background:var(--acc);transform:translateY(-1px);}
+.search-hint{margin-top:22px;color:var(--mute);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.chip{display:inline-flex;gap:10px;align-items:baseline;padding:9px 16px;border:1px solid var(--hair);border-radius:999px;background:var(--card);box-shadow:var(--sh-sm);font-size:13.5px;color:var(--ink2);transition:color .2s,border-color .2s,transform .25s var(--ease),box-shadow .25s;}
+.chip .mono{color:var(--mute);font-size:11px;}
+.chip:hover{color:var(--acc);border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--sh-md);}
+
+.steps4{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:100px;}
+.steps4 li{padding:22px 22px 24px;background:var(--card);border:1px solid var(--hair);border-radius:18px;box-shadow:var(--sh-sm);transition:transform .3s var(--ease),box-shadow .3s;}
+.steps4 li:hover{transform:translateY(-3px);box-shadow:var(--sh-md);}
+.steps4 .mono{display:inline-grid;place-items:center;min-width:30px;height:24px;padding:0 6px;border-radius:7px;background:var(--acc-soft);color:var(--acc);font-weight:600;}
+.steps4 b{display:block;margin-top:26px;font-size:18px;font-weight:700;letter-spacing:-.025em;}
+.steps4 p{margin-top:6px;font-size:13.5px;color:var(--mute);}
+@media(max-width:860px){.steps4{grid-template-columns:1fr 1fr;}}
 
 /* ---------- loading ---------- */
-.loading{min-height:calc(100vh - 66px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-.ring{width:58px;height:58px;border-radius:50%;border:4px solid var(--paper2);border-top-color:var(--sky);border-right-color:var(--amber);margin-bottom:26px;animation:spin .9s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading .kq{font-family:'Noto Serif KR';font-size:clamp(19px,2.6vw,26px);font-weight:700;max-width:660px;line-height:1.5;}
-.loading .sub{margin-top:10px;font-size:14px;color:var(--gray);}
-.loading .tags{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:26px;max-width:560px;}
-.at{font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--card);border:1px solid var(--line2);color:var(--skydk);box-shadow:var(--sh-sm);opacity:0;animation:popIn .4s ease forwards;}
-.at b{color:var(--ink);}
+.loading{min-height:calc(100vh - 63px);min-height:calc(100dvh - 63px);display:flex;flex-direction:column;justify-content:center;padding:64px 0;}
+.loading .kq{font-size:clamp(28px,4.4vw,60px);font-weight:800;letter-spacing:-.045em;line-height:1.12;max-width:15em;}
+.bar{margin-top:40px;height:4px;max-width:560px;border-radius:99px;background:var(--bg2);position:relative;overflow:hidden;}
+.bar:after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--acc);transform:translateX(-100%);animation:bar 1.6s var(--ease) infinite;}
+@keyframes bar{to{transform:translateX(100%);}}
+.loading .sub{margin-top:16px;color:var(--mute);font-size:15px;}
+.loading .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px;}
+.at{font-family:var(--mono);font-size:12px;color:var(--mute);background:var(--card);border:1px solid var(--hair);border-radius:999px;padding:7px 14px;box-shadow:var(--sh-sm);opacity:0;animation:popIn .4s ease forwards;}
+.at b{color:var(--ink);font-weight:600;}
 @keyframes popIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 
-/* ---------- emotions view ---------- */
-.emview{max-width:860px;margin:0 auto;padding:64px 24px 90px;text-align:center;}
-.context{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--gray);border:1px solid var(--line2);border-radius:999px;padding:8px 17px;background:var(--card);box-shadow:var(--sh-sm);}
-.understood{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--sh-sm);}
-.understood .uh{font-size:11px;font-weight:900;letter-spacing:.2em;color:var(--amberdk);text-transform:uppercase;margin-bottom:11px;}
-.uchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.uchip{font-size:12.5px;background:var(--paper);border:1px solid var(--line2);border-radius:999px;padding:7px 14px;color:var(--gray);}
-.uchip b{color:var(--ink);}
-.emview h2{margin-top:38px;font-size:clamp(28px,4.2vw,42px);line-height:1.26;letter-spacing:-.01em;}
-.emview .sub{margin-top:12px;color:var(--gray);font-size:15px;}
-.egrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px;}
-@media(max-width:640px){.egrid{grid-template-columns:1fr;}}
-.emo{position:relative;border:1px solid var(--line2);border-radius:18px;padding:28px 22px;text-align:left;font-size:16px;font-weight:700;line-height:1.5;transition:.2s cubic-bezier(.2,.7,.2,1);color:var(--ink);background:var(--card);box-shadow:var(--sh-sm);overflow:hidden;}
-.emo:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sky);opacity:.7;transition:.2s;}
-.emo.g{background:var(--card);}
-.emo.g:before{background:var(--amber);}
-.emo.b{background:var(--card);}
-.emo.b:before{background:var(--sky);}
-.emo.s{background:linear-gradient(160deg,#152a34,#0f88c4);color:#fff;border-color:transparent;}
-.emo.s:before{background:rgba(255,255,255,.5);}
-.emo:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);}
-.emo:hover:before{width:6px;opacity:1;}
-.emo .em{font-size:26px;display:block;margin-bottom:12px;}
-html[lang="en"] .emo{font-size:14.5px;}
-.em-actions{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center;}
-.back-link{background:none;border:none;color:var(--gray);font-size:13.5px;display:inline-flex;align-items:center;gap:6px;padding:8px 6px;transition:.15s;}
-.back-link:hover{color:var(--ink);}
-
-/* ---------- detail view ---------- */
-.detail{padding:34px 0 80px;}
-.detail-hero{border-radius:24px;background:linear-gradient(155deg,#1b1714 0%,#2a2018 55%,#3a2a1a 100%);color:#fff;padding:26px 32px;margin-top:14px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:var(--sh-lg);}
-.detail-hero:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(200,99,30,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(200,99,30,.16) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(64% 100% at 88% 0%,#000,transparent);}
-.detail-hero>*{position:relative;z-index:2;}
-@media(max-width:640px){.detail-hero{padding:32px 24px;}}
-.dh-region{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:#fff;background:linear-gradient(120deg,var(--amber),var(--amberdk));border-radius:999px;padding:7px 16px;letter-spacing:.02em;}
-.detail-hero h1{font-family:'Noto Serif KR';font-weight:900;margin-top:12px;font-size:clamp(21px,2.9vw,33px);line-height:1.3;color:#fff;letter-spacing:-.01em;}
-.dh-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-.dh-tags span{font-size:12px;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px;color:rgba(255,255,255,.9);background:rgba(255,255,255,.05);}
-.demo-note{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#f0d9a0;background:rgba(200,99,30,.18);border:1px solid rgba(240,217,160,.35);border-radius:999px;padding:6px 14px;margin-top:12px;}
-
-.cols{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:20px;align-items:start;}
-@media(max-width:820px){.cols{grid-template-columns:1fr;}}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 26px;margin-bottom:20px;box-shadow:var(--sh-sm);}
-.panel h3{font-size:16.5px;font-weight:900;display:flex;align-items:center;gap:8px;letter-spacing:-.01em;}
-.panel .pdesc{font-size:13px;color:var(--gray);margin-top:5px;}
-
-/* story — editorial serif */
-.story-hero{position:relative;background:linear-gradient(165deg,var(--ambersoft),var(--paper2));border:1px solid var(--line2);border-radius:var(--radius);padding:24px 26px;margin-bottom:20px;box-shadow:var(--sh-sm);overflow:hidden;}
-.story-hero:before{content:"\201C";position:absolute;right:20px;top:0;font-family:'Noto Serif KR';font-size:88px;line-height:1;color:rgba(200,99,30,.14);pointer-events:none;}
-.story-hero .sk{font-size:11px;font-weight:900;letter-spacing:.22em;color:var(--amberdk);text-transform:uppercase;position:relative;}
-.story-hero h2{font-family:'Noto Serif KR';font-weight:900;margin-top:14px;font-size:clamp(22px,3vw,30px);line-height:1.4;position:relative;}
-.story-hero .body{font-family:'Noto Serif KR';font-weight:400;margin-top:18px;font-size:15.5px;line-height:2.05;color:var(--ink2);position:relative;}
-.lbox{margin-top:22px;background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:17px 19px;position:relative;}
-.lbox .ll{font-size:11px;font-weight:900;color:var(--skydk);letter-spacing:.1em;margin-bottom:7px;text-transform:uppercase;}
-.lbox .ltxt{font-family:'Noto Serif KR';font-size:13.5px;color:var(--gray);line-height:1.85;}
-
-/* course nodes with big editorial numbers */
-.rnode{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);align-items:flex-start;}
-.rnode:last-child{border-bottom:none;}
-.rpin{flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:'Noto Serif KR';font-weight:900;font-size:15px;box-shadow:var(--sh-sm);}
-.rnode:nth-child(even) .rpin{background:linear-gradient(150deg,var(--sky),var(--skydk));}
-.rnode:nth-child(odd) .rpin{background:linear-gradient(150deg,var(--amber),var(--amberdk));}
-.rinfo b{font-size:15px;font-weight:900;}
-.rinfo .addr{font-size:12px;color:var(--lgray);margin-top:2px;}
-.rinfo p{font-size:12.5px;color:var(--gray);margin-top:6px;line-height:1.7;}
-.rinfo .whyk{font-size:11px;font-weight:900;color:var(--amberdk);letter-spacing:.04em;}
-.rimg{width:92px;height:92px;border-radius:10px;background:var(--paper2) center/cover no-repeat;flex-shrink:0;display:none;box-shadow:var(--sh-sm);}
-.rimg.show{display:block;}
-#map{width:100%;height:440px;border-radius:16px;border:1px solid var(--line2);margin-top:16px;background:var(--paper2);display:grid;place-items:center;color:var(--lgray);font-size:13.5px;text-align:center;padding:0 20px;box-shadow:var(--sh-sm);overflow:hidden;}
-/* 하단 2단 행 + 슬림 타임라인 + 하단 액션 */
-.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start;}
-@media(max-width:820px){.grid2{grid-template-columns:1fr;}}
-.panel.slim{padding:16px 22px 10px;}
-.panel.slim h3{font-size:14px;}
-.actions-row{display:flex;gap:12px;max-width:680px;margin:6px auto 0;}
-.actions-row .btn-wide{flex:1;margin-top:0;}
-
-/* transport */
-.tp{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--sh-md);margin-bottom:20px;}
-.tp-head{background:linear-gradient(150deg,#1b1714,#2a2018);color:#fff;padding:18px 22px;}
-.tp-head h3{font-size:14.5px;font-weight:800;color:#fff;}
-.tp-ctx{display:flex;gap:12px;font-size:11.5px;color:rgba(255,255,255,.6);margin-top:5px;}
-.wx-row{display:flex;gap:7px;flex-wrap:wrap;padding:16px 20px 0;align-items:center;}
-.wx-row .wl{font-size:11.5px;color:var(--gray);margin-right:2px;font-weight:600;}
-.wx-btn{font-size:12px;border:1px solid var(--line2);border-radius:999px;background:var(--card);color:var(--gray);padding:7px 13px;transition:.15s;}
-.wx-btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
-.tp-best{margin:16px 20px;background:linear-gradient(155deg,var(--skysoft),#fff);border:1px solid rgba(15,136,196,.28);border-radius:15px;padding:18px 19px;}
-.tp-best .badge{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.06em;background:linear-gradient(120deg,var(--sky),var(--skydk));color:#fff;border-radius:7px;padding:4px 10px;}
-.tp-best .bmode{font-size:17px;font-weight:900;margin-top:10px;}
-.tp-best .binfo{font-size:13px;color:var(--gray);margin-top:3px;}
-.tp-best .breason{font-size:12.5px;color:var(--skydk);margin-top:10px;font-weight:600;}
-.tp-opt{display:flex;justify-content:space-between;gap:10px;padding:14px 20px;border-top:1px solid var(--line);font-size:13px;}
-.tp-opt .om{font-weight:700;}
-.tp-opt .oc{font-weight:900;white-space:nowrap;}
-.tp-opt .ot{color:var(--gray);flex:1;text-align:right;}
-
-/* passport */
-.pp{background:linear-gradient(160deg,#1b1714,#26313a);color:#fff;border-radius:var(--radius);padding:28px 26px;margin-bottom:20px;box-shadow:var(--sh-md);position:relative;overflow:hidden;}
-.pp:after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(15,136,196,.3),transparent 70%);}
-.pp>*{position:relative;z-index:2;}
-.pp h3{color:#fff;font-size:16.5px;font-weight:900;}
-.pp .psub{font-size:12.5px;color:rgba(255,255,255,.55);margin:5px 0 15px;}
-.progress{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-bottom:10px;}
-.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--sky),#5ec8f2);transition:width .5s cubic-bezier(.2,.7,.2,1);}
-.pp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);}
-.pp-row:last-child{border-bottom:none;}
-.pp-row .nm{font-size:13.5px;font-weight:700;color:rgba(255,255,255,.72);}
-.pp-row .nm.done{color:#7cd0f7;}
-.pp-btn{background:rgba(15,136,196,.22);border:1px solid rgba(15,136,196,.5);color:#8ad6f9;border-radius:9px;font-size:12px;font-weight:600;padding:7px 14px;transition:.15s;}
-.pp-btn:hover{background:rgba(15,136,196,.4);}
-.pp-check{color:#7cd0f7;font-size:18px;}
-.textbook-panel .tb{font-size:13.5px;color:var(--gray);line-height:1.9;}
-.btn-wide{width:100%;border:none;border-radius:14px;background:linear-gradient(150deg,var(--sky),var(--skydk));color:#fff;font-size:14.5px;font-weight:700;padding:16px;transition:.2s;box-shadow:var(--sh-sm);}
-.btn-wide:hover{transform:translateY(-2px);box-shadow:var(--sh-md);}
-.btn-wide.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line2);margin-top:11px;box-shadow:var(--sh-sm);}
-.btn-wide.ghost:hover{border-color:var(--ink);}
-
-/* overlay + toast */
-.overlay{position:fixed;inset:0;background:rgba(15,12,10,.6);backdrop-filter:blur(4px);z-index:90;display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .25s ease;}
-@keyframes fade{from{opacity:0;}}
-.complete-card{background:var(--card);border-radius:24px;max-width:430px;width:100%;padding:42px 32px;text-align:center;border:1px solid var(--line2);box-shadow:var(--sh-lg);animation:rise .35s cubic-bezier(.2,.7,.2,1);}
-@keyframes rise{from{opacity:0;transform:translateY(20px) scale(.97);}}
-.cc-seal{width:76px;height:76px;border-radius:50%;background:linear-gradient(155deg,var(--ambersoft),var(--skysoft));display:grid;place-items:center;font-size:34px;margin:0 auto 18px;box-shadow:var(--sh-sm);}
-.complete-card h2{font-family:'Noto Serif KR';font-weight:900;font-size:25px;}
-.complete-card p{font-size:14px;color:var(--gray);margin-top:8px;}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-size:13.5px;padding:13px 22px;border-radius:999px;z-index:95;display:flex;gap:8px;align-items:center;box-shadow:var(--sh-lg);animation:rise .3s cubic-bezier(.2,.7,.2,1);}
-
-.footer{border-top:1px solid var(--line);padding:38px 0;margin-top:24px;}
-.footer .ft{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--gray);align-items:center;}
-.footer b{color:var(--ink);}
-.footer .steps{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--lgray);}
-.footer .steps i{color:var(--sky);font-style:normal;}
-
-/* ===== 감정 = 테마 (mood theming) ===== */
-:root[data-mood="heat"]{--sky:#c0431a;--skydk:#8a2c10;--skysoft:#f4ded3;--amber:#a83214;--amberdk:#761f0b;--ambersoft:#f1d7ca;}
-:root[data-mood="bright"]{--sky:#0f88c4;--skydk:#0a5f8a;--skysoft:#e2f0f8;--amber:#0e9488;--amberdk:#0a6b62;--ambersoft:#d7efeb;}
-:root[data-mood="calm"]{--sky:#4d6b88;--skydk:#35506b;--skysoft:#e7ecf1;--amber:#7c6a52;--amberdk:#584936;--ambersoft:#ebe3d5;}
-
-/* ===== 스크롤 스토리텔링 ===== */
-.story-line{font-family:'Noto Serif KR';font-weight:400;font-size:15px;line-height:1.92;color:var(--ink2);margin-top:10px;}
-.story-line:first-of-type{margin-top:14px;}
-.pullquote{position:relative;margin:18px 0 2px;padding:14px 18px;border-left:4px solid var(--amber);background:rgba(0,0,0,.025);font-family:'Noto Serif KR';font-weight:700;font-size:15px;line-height:1.68;color:var(--ink);border-radius:0 12px 12px 0;}
-.pullquote cite{display:block;margin-top:8px;font-size:12px;font-weight:400;font-style:normal;color:var(--gray);}
-.sources{margin-top:14px;font-size:11.5px;color:var(--lgray);line-height:1.7;}
+/* ---------- emotions ---------- */
+.emview{padding-top:26px;padding-bottom:110px;}
+.em-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--hair);color:var(--mute);}
+.context{font-family:var(--mono);font-size:12px;color:var(--ink2);}
+.understood{margin-top:14px;}
+.understood .uh{color:var(--mute);margin-right:12px;}
+.uchips{display:inline-flex;gap:6px;flex-wrap:wrap;vertical-align:middle;}
+.uchip{font-family:var(--mono);font-size:12px;color:var(--mute);background:var(--card);border:1px solid var(--hair);border-radius:999px;padding:5px 12px;}
+.uchip b{color:var(--ink);font-weight:600;}
+.em-title{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px 24px;margin-top:52px;align-items:end;}
+.em-title h2{grid-column:1/span 8;font-size:clamp(32px,5vw,72px);font-weight:800;letter-spacing:-.05em;line-height:1.05;}
+.em-title .sub{grid-column:9/-1;color:var(--mute);font-size:15px;max-width:22em;}
+@media(max-width:860px){.em-title h2,.em-title .sub{grid-column:1/-1;}}
+/* 비대칭 카드: 첫 카드가 두 줄을 차지하는 감정색 다크 카드 */
+.egrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-auto-rows:minmax(150px,auto);gap:14px;margin-top:44px;}
+.emo{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:22px;text-align:left;padding:24px 26px;border-radius:var(--radius);background:var(--card);border:1px solid var(--hair);box-shadow:var(--sh-sm);transition:transform .3s var(--ease),box-shadow .3s,border-color .3s;}
+.emo.g{--acc:var(--heat);}
+.emo.b{--acc:var(--bright);}
+.emo.s{--acc:var(--calm);}
+.emo:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--acc);transition:width .3s var(--ease);}
+.emo-top{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.emo-em{font-size:28px;line-height:1;}
+.emo-tag{color:var(--mute);white-space:nowrap;}
+.emo-tag:before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--acc);margin-right:8px;vertical-align:1px;}
+.emo-t{font-size:clamp(18px,1.8vw,22px);font-weight:700;letter-spacing:-.03em;line-height:1.3;}
+.emo:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:color-mix(in oklab,var(--acc) 45%,var(--hair));}
+.emo:hover:before{width:7px;}
+.egrid .emo:first-child{grid-row:span 2;padding:32px;color:#fff;border-color:transparent;
+  background:radial-gradient(120% 90% at 100% 0%,color-mix(in oklab,var(--acc) 72%,transparent),transparent 62%),linear-gradient(160deg,color-mix(in oklab,var(--acc) 26%,#131210),color-mix(in oklab,var(--acc) 48%,#131210));}
+.egrid .emo:first-child:before{display:none;}
+.egrid .emo:first-child .emo-em{font-size:46px;}
+.egrid .emo:first-child .emo-tag{color:rgba(255,255,255,.72);}
+.egrid .emo:first-child .emo-tag:before{background:#fff;}
+.egrid .emo:first-child .emo-t{font-size:clamp(24px,2.8vw,36px);line-height:1.2;}
+@media(max-width:640px){.egrid{grid-template-columns:1fr;}.egrid .emo:first-child{grid-row:auto;min-height:220px;}}
+.em-actions{margin-top:24px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;}
 
 /* ===== 이야기 화면: 흑백 선화 + 지나가는 문장 ===== */
-#view-tale.on{position:fixed;inset:0;z-index:300;display:flex;background:#f3eee4;overflow:auto;}
-.tale{margin:auto;width:100%;max-width:620px;padding:32px 16px 64px;display:flex;flex-direction:column;align-items:center;color:#111;}
-.tale-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:600;letter-spacing:.32em;text-align:center;opacity:0;transition:opacity 1.6s ease;}
+#view-tale.on{position:fixed;inset:0;z-index:var(--z-tale);display:flex;background:var(--bg);overflow:auto;}
+.tale{margin:auto;width:100%;max-width:620px;padding:32px 16px 64px;display:flex;flex-direction:column;align-items:center;color:var(--ink);}
+.tale-title{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:.32em;text-align:center;opacity:0;transition:opacity 1.6s ease;}
 .tale.go .tale-title{opacity:.8;}
 .tale-art{width:min(440px,88vw);height:auto;margin:26px 0 30px;overflow:visible;}
-.tale-art path{fill:none;stroke:#111;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
-.tale-lines{position:relative;width:100%;height:3.8em;font-family:'Noto Serif KR',serif;font-size:14px;line-height:1.85;text-align:center;overflow:hidden;}
+.tale-art path{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.tale-lines{position:relative;width:100%;height:3.8em;font-family:var(--serif);font-size:14px;line-height:1.85;text-align:center;overflow:hidden;}
 .tale-line{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 8px;opacity:0;animation:taleLine var(--d) ease forwards;}
 @keyframes taleLine{0%{opacity:0;transform:translateY(12px);}15%{opacity:1;transform:none;}80%{opacity:1;transform:none;}100%{opacity:0;transform:translateY(-12px);}}
-.tale-skip{position:fixed;right:20px;bottom:18px;background:none;border:none;border-bottom:1px solid #111;color:#111;font-size:12px;letter-spacing:.12em;padding:2px 0;opacity:.55;transition:opacity .2s;}
+.tale-skip{position:fixed;right:20px;bottom:18px;border-bottom:1px solid var(--ink);color:var(--ink);font-family:var(--mono);font-size:12px;padding:2px 0;opacity:.55;transition:opacity .2s;}
 .tale-skip:hover,.tale-skip:focus-visible{opacity:1;}
 @media(prefers-reduced-motion:reduce){
   .tale-art path{transition:none!important;}
   @keyframes taleLine{0%{opacity:0;}15%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
 }
 
-/* ===== 사건의 흐름 (timeline) ===== */
-.timeline{display:flex;gap:0;overflow-x:auto;padding:8px 2px 2px;}
-.tl-item{flex:1;min-width:140px;position:relative;padding:18px 16px 4px 0;border-top:2px solid var(--line2);}
-.tl-item:before{content:"";position:absolute;top:-6px;left:0;width:11px;height:11px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px var(--card);}
-.tl-y{display:block;font-weight:900;font-size:13px;color:var(--amberdk);}
-.tl-t{display:block;font-size:12.5px;color:var(--gray);margin-top:4px;line-height:1.5;}
+/* ---------- detail: 번호 섹션 + 카드 ---------- */
+.detail{padding-top:22px;padding-bottom:110px;}
+.art{counter-reset:sec;}
+/* 상단: 감정색 다크 히어로 */
+.art-head{position:relative;overflow:hidden;margin-top:12px;padding:clamp(28px,4.4vw,52px);border-radius:26px;color:#fff;box-shadow:var(--sh-lg);
+  background:radial-gradient(90% 140% at 100% 0%,color-mix(in oklab,var(--acc) 55%,transparent),transparent 58%),linear-gradient(155deg,var(--deep),var(--deep2));}
+.art-head:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(60% 100% at 90% 0%,#000,transparent);}
+.art-head>*{position:relative;z-index:1;}
+.art-meta{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;color:rgba(255,255,255,.72);}
+.art-meta .region{color:#fff;font-weight:600;background:var(--acc);padding:5px 12px;border-radius:999px;}
+.art-title{margin-top:22px;font-size:clamp(30px,4.8vw,66px);font-weight:800;letter-spacing:-.045em;line-height:1.08;max-width:15em;}
+.fact-badge{padding:4px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.3);}
+.fact-badge.confirmed{color:#fff;}
+.fact-badge.theory{color:#f6d2a8;border-color:rgba(246,210,168,.45);}
+.demo-note{display:inline-block;margin-top:22px;font-family:var(--mono);font-size:12px;color:#f3e3c0;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 14px;}
 
-/* ===== 그때와 지금 (before/after slider) ===== */
-.ba{position:relative;height:330px;border-radius:14px;overflow:hidden;box-shadow:var(--sh-sm);user-select:none;touch-action:none;background:var(--paper2);}
+.sec{margin-top:18px;}
+/* 카드 표면 */
+.art>.sec:not(.split),.split>*{background:var(--card);border:1px solid var(--hair);border-radius:var(--radius);padding:clamp(22px,3vw,32px);box-shadow:var(--sh-sm);}
+.sec-h{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.sec-h:before{counter-increment:sec;content:counter(sec,decimal-leading-zero);display:inline-grid;place-items:center;min-width:30px;height:24px;padding:0 6px;border-radius:7px;background:var(--acc-soft);font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--acc);}
+.sec-h h3{font-size:17px;font-weight:800;letter-spacing:-.02em;}
+.sec-h .pdesc{margin-left:auto;font-size:13px;color:var(--mute);}
+.split{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start;}
+@media(max-width:900px){.split{grid-template-columns:1fr;}}
+
+/* 사건의 흐름 */
+.timeline{list-style:none;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(160px,1fr);overflow-x:auto;scrollbar-width:thin;padding-bottom:4px;}
+.tl-item{position:relative;padding:0 20px 4px 0;}
+.tl-item:before{content:"";display:block;width:10px;height:10px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px var(--acc-soft);margin:0 0 18px 2px;}
+.tl-item:after{content:"";position:absolute;left:16px;right:0;top:4px;height:2px;background:var(--hair);}
+.tl-item:last-child:after{display:none;}
+.tl-y{display:block;font-size:clamp(24px,2.8vw,38px);font-weight:800;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums;}
+.tl-t{display:block;margin-top:10px;font-size:13.5px;color:var(--ink2);line-height:1.55;max-width:16em;}
+
+/* 이야기 — 따뜻하게 물든 카드 + 큰따옴표 장식 */
+.art>.story{position:relative;overflow:hidden;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 24px;background:linear-gradient(165deg,var(--acc-soft),var(--card) 62%);}
+.story:after{content:"\201C";position:absolute;right:28px;top:4px;font-family:var(--serif);font-size:120px;line-height:1;color:color-mix(in oklab,var(--acc) 16%,transparent);pointer-events:none;}
+.story .sec-h{grid-column:1/-1;}
+.story-body{grid-column:1/span 7;}
+.story-aside{grid-column:9/-1;}
+@media(max-width:900px){.story-body,.story-aside{grid-column:1/-1;}.story-aside{margin-top:34px;}}
+.story-line{font-family:var(--serif);font-size:16.5px;line-height:1.95;color:var(--ink2);margin-top:12px;max-width:34em;}
+.story-line:first-child{margin-top:0;font-size:clamp(19px,1.9vw,23px);line-height:1.62;color:var(--ink);font-weight:600;}
+.pullquote{font-family:var(--serif);font-size:clamp(17px,1.6vw,20px);font-weight:700;line-height:1.6;color:var(--ink);background:var(--card);border-left:4px solid var(--acc);border-radius:0 14px 14px 0;padding:18px 20px;box-shadow:var(--sh-sm);}
+.pullquote cite{display:block;margin-top:12px;font-family:var(--mono);font-size:12px;font-weight:400;font-style:normal;color:var(--mute);}
+.sources{margin-top:22px;font-size:12.5px;color:var(--mute);line-height:1.75;}
+.sources .mono{display:block;color:var(--ink);margin-bottom:4px;}
+
+/* 소설 전문 — 길면 접어 두고 "전문 읽기"로 펼친다 */
+.fic-title{font-family:var(--serif);font-size:clamp(20px,2vw,24px);font-weight:700;letter-spacing:-.01em;margin-bottom:14px;}
+.fic-body{font-family:var(--serif);font-size:16.5px;line-height:2;color:var(--ink2);max-width:36em;}
+.fic-body p+p{margin-top:1em;}
+.fic-body.clamp{max-height:15em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent);}
+.fic-more{margin-top:14px;color:var(--acc);}
+
+/* 그때와 지금 */
+.ba{position:relative;height:clamp(240px,36vw,440px);border-radius:14px;overflow:hidden;user-select:none;touch-action:none;background:var(--bg2);}
 .ba-img{position:absolute;inset:0;background-size:cover;background-position:center;}
-.ba-old.pending{filter:sepia(.6) contrast(.92) brightness(.9);}
-.ba-handle{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25);pointer-events:none;}
-.ba-knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:var(--sh-md);display:grid;place-items:center;font-size:15px;color:var(--ink);}
+.ba-handle{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.2);pointer-events:none;}
+.ba-knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:var(--sh-md);display:grid;place-items:center;font-size:15px;color:var(--ink);}
 .ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0;}
-.ba-label{position:absolute;bottom:14px;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:999px;backdrop-filter:blur(3px);}
+.ba-label{position:absolute;bottom:14px;font-family:var(--mono);font-size:11.5px;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);padding:5px 11px;border-radius:999px;}
 .ba-label.then{left:14px;}
 .ba-label.now{right:14px;}
-.ba-note{font-size:11.5px;color:var(--lgray);margin-top:9px;}
+.ba-note{font-family:var(--mono);font-size:12px;color:var(--mute);margin-top:10px;}
 
-/* ===== 학습 연결 패널 ===== */
-.learn .lv{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 15px;}
-.lvbtn{font-size:12px;border:1px solid var(--line2);border-radius:999px;background:var(--card);color:var(--gray);padding:7px 14px;transition:.15s;}
-.lvbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
-.lvbtn:not(.on):hover{border-color:var(--sky);color:var(--skydk);}
-.learn .tb{font-size:13.5px;color:var(--gray);line-height:1.9;padding:15px 16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;}
-.exam{margin-top:12px;padding:15px 16px;border:1px solid rgba(15,136,196,.28);background:var(--skysoft);border-radius:12px;}
-.exam .em-meta{font-size:11px;font-weight:900;letter-spacing:.08em;color:var(--skydk);text-transform:uppercase;}
-.exam .em-q{font-size:13px;color:var(--ink2);margin-top:7px;line-height:1.7;}
-.kp{list-style:none;margin:16px 0 0;padding:0;}
-.kp li{position:relative;font-size:13px;color:var(--ink2);line-height:1.7;padding:8px 0 8px 21px;border-bottom:1px dashed var(--line);}
-.kp li:last-child{border-bottom:none;}
-.kp li:before{content:"›";position:absolute;left:4px;top:8px;color:var(--amber);font-weight:900;}
-.savebtn{width:100%;margin-top:15px;border:1px dashed var(--line2);background:var(--card);color:var(--skydk);font-size:13px;font-weight:700;border-radius:12px;padding:13px;transition:.15s;}
-.savebtn:hover{border-color:var(--sky);background:var(--skysoft);}
+/* 코스 */
+.course{list-style:none;}
+.rnode{display:grid;grid-template-columns:46px minmax(0,1fr) 180px;gap:20px;padding:20px 0;border-top:1px solid var(--hair);align-items:start;}
+.rnode:first-child{border-top:none;padding-top:0;}
+.rnode:last-child{padding-bottom:0;}
+.rpin{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:var(--ink);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;box-shadow:var(--sh-sm);}
+.rnode:nth-child(odd) .rpin{background:var(--acc);}
+.rinfo b{display:block;font-size:clamp(18px,1.8vw,22px);font-weight:700;letter-spacing:-.03em;line-height:1.3;}
+.rinfo .addr{font-family:var(--mono);font-size:12px;color:var(--mute);margin-top:6px;}
+.rinfo p{font-size:14.5px;color:var(--ink2);margin-top:12px;max-width:36em;line-height:1.75;}
+.whyk{display:block;font-family:var(--mono);font-size:11.5px;color:var(--acc);margin-bottom:2px;}
+.rimg{width:100%;aspect-ratio:4/3;border-radius:12px;background:var(--bg2) center/cover no-repeat;box-shadow:var(--sh-sm);}
+@media(max-width:700px){.rnode{grid-template-columns:40px minmax(0,1fr);gap:14px;}.rpin{width:40px;height:40px;font-size:15px;}.rimg{grid-column:2;}}
 
-/* ===== 신뢰 배지 (다크 히어로 위) ===== */
-.fact-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;border-radius:999px;padding:7px 14px;margin-top:18px;margin-left:8px;}
-.fact-badge.confirmed{color:#8fe0ac;background:rgba(60,180,110,.16);border:1px solid rgba(120,220,160,.35);}
-.fact-badge.theory{color:#f0cf8a;background:rgba(200,150,40,.16);border:1px solid rgba(240,210,140,.35);}
+/* 지도 */
+#map{width:100%;height:420px;border-radius:14px;border:1px solid var(--hair);background:var(--bg2);display:grid;place-items:center;color:var(--mute);font-size:13.5px;text-align:center;padding:0 20px;overflow:hidden;}
+.map-label{background:var(--ink);color:#fff;font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:7px;white-space:nowrap;box-shadow:0 4px 10px rgba(22,20,16,.25);}
+
+/* 가는 방법 */
+.tp-ctx{font-family:var(--mono);font-size:12px;color:var(--mute);margin:-10px 0 16px;}
+.wx-row,.lv{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+.wx-row .wl,.lv .mono{font-family:var(--mono);font-size:12px;color:var(--mute);margin-right:4px;}
+.wx-btn,.lvbtn{font-size:13px;color:var(--ink2);padding:7px 14px;border:1px solid var(--hair);border-radius:999px;background:var(--card);transition:border-color .2s,color .2s,background .2s;}
+.wx-btn:hover,.lvbtn:hover{border-color:var(--acc);color:var(--acc);}
+.wx-btn.on,.lvbtn.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+.tp-best{padding:20px 22px;border-radius:14px;background:var(--acc-soft);margin-bottom:6px;}
+.tp-best .badge{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--acc);padding:3px 9px;border-radius:6px;}
+.tp-best .bmode{font-size:clamp(24px,2.4vw,30px);font-weight:800;letter-spacing:-.04em;margin-top:10px;}
+.tp-best .binfo{font-family:var(--mono);font-size:12.5px;color:var(--ink2);margin-top:4px;}
+.tp-best .breason{font-size:14px;color:var(--ink2);margin-top:10px;}
+.tp-opt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 4px;border-bottom:1px solid var(--hair);font-size:14px;}
+.tp-opt:last-child{border-bottom:none;padding-bottom:0;}
+.tp-opt .om{font-weight:700;}
+.tp-opt .ot{flex:1;text-align:right;font-family:var(--mono);font-size:12px;color:var(--mute);}
+.tp-opt .oc{font-family:var(--mono);font-size:12px;}
+.tp-opt a.ot{color:var(--acc);transition:opacity .2s;}
+.tp-opt a.ot:hover{opacity:.75;}
+
+/* 스탬프 패스포트 — 감정색 다크 카드 */
+.split>.pp{color:#fff;border-color:transparent;box-shadow:var(--sh-md);position:relative;overflow:hidden;
+  background:radial-gradient(100% 80% at 100% 0%,color-mix(in oklab,var(--acc) 50%,transparent),transparent 60%),linear-gradient(160deg,var(--deep),var(--deep2));}
+.pp .sec-h:before{background:rgba(255,255,255,.14);color:#fff;}
+.psub{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.66);margin-bottom:12px;}
+.progress{height:6px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-bottom:6px;}
+.progress span{display:block;height:100%;width:100%;border-radius:inherit;background:linear-gradient(90deg,var(--acc),#f1e7cf);transform-origin:left;transition:transform .6s var(--ease);}
+.pp-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.12);}
+.pp-row:last-child{border-bottom:none;padding-bottom:0;}
+.pp-row .nm{font-size:14.5px;font-weight:600;color:rgba(255,255,255,.86);}
+.pp-row .nm.done{color:rgba(255,255,255,.5);text-decoration:line-through;}
+.pp-btn{font-family:var(--mono);font-size:12px;color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);border-radius:9px;padding:6px 13px;transition:background .2s,color .2s;}
+.pp-btn:hover{background:#fff;color:var(--ink);}
+.pp-check{font-family:var(--mono);font-size:13px;color:#f1e7cf;}
+
+/* 학습 연결 */
+.learn .tb{font-family:var(--serif);font-size:15.5px;line-height:1.9;color:var(--ink2);padding:16px 18px;background:var(--bg);border-left:3px solid var(--ink);border-radius:0 12px 12px 0;}
+.exam{margin-top:14px;padding:16px 18px;border-radius:12px;background:var(--acc-soft);}
+.exam .em-meta{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--acc);}
+.exam .em-q{font-size:14.5px;color:var(--ink);margin-top:6px;line-height:1.7;}
+.kp{list-style:none;margin-top:18px;counter-reset:kp;}
+.kp li{display:grid;grid-template-columns:34px 1fr;font-size:14px;color:var(--ink2);line-height:1.7;padding:11px 0;border-top:1px dashed var(--hair);}
+.kp li:before{counter-increment:kp;content:counter(kp,decimal-leading-zero);font-family:var(--mono);font-size:12px;color:var(--acc);padding-top:3px;}
+
+/* 하단 액션 */
+.actions-row{margin-top:36px;display:flex;justify-content:center;align-items:center;gap:10px 24px;flex-wrap:wrap;}
+.big-link{font-size:16px;font-weight:700;letter-spacing:-.01em;color:#fff;background:var(--ink);padding:18px 28px;border-radius:14px;box-shadow:var(--sh-md);transition:background .2s,transform .25s var(--ease),box-shadow .25s;}
+.big-link .ar{display:inline-block;margin-left:4px;transition:transform .35s var(--ease);}
+.big-link:hover{background:var(--acc);transform:translateY(-2px);box-shadow:var(--sh-lg);}
+.big-link:hover .ar{transform:translateX(6px);}
+
+/* ---------- overlay + toast ---------- */
+.overlay{position:fixed;inset:0;background:color-mix(in oklab,var(--deep) 62%,transparent);backdrop-filter:blur(4px);z-index:var(--z-overlay);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;}}
+.complete-card{background:var(--card);max-width:440px;width:100%;padding:40px 34px 34px;border-radius:26px;border:1px solid var(--hair);box-shadow:var(--sh-lg);text-align:center;animation:rise .35s var(--ease);}
+@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98);}}
+.cc-seal{display:inline-grid;place-items:center;min-width:112px;height:112px;padding:0 14px;border-radius:50%;background:var(--acc-soft);font-size:40px;font-weight:800;letter-spacing:-.05em;color:var(--acc);font-variant-numeric:tabular-nums;margin-bottom:20px;}
+.cc-kicker{color:var(--mute);}
+.complete-card h2{margin-top:6px;font-size:26px;font-weight:800;letter-spacing:-.04em;}
+.complete-card p{margin-top:8px;font-size:14.5px;color:var(--ink2);}
+.cc-actions{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:26px;flex-wrap:wrap;}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13.5px;padding:12px 20px;border-radius:999px;box-shadow:var(--sh-lg);z-index:var(--z-toast);display:flex;gap:10px;align-items:center;animation:toastIn .3s var(--ease);}
+.toast.err{background:var(--heat);}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,12px);}}
+
+/* ---------- footer ---------- */
+.footer{border-top:1px solid var(--hair);padding:24px 0 40px;}
+.footer .ft{display:flex;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;color:var(--mute);}
+.footer b{color:var(--ink);font-weight:600;}
 
 @media(prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important;scroll-behavior:auto!important;}
@@ -303,64 +356,73 @@ html[lang="en"] .emo{font-size:14.5px;}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main" data-i18n="skip">본문으로 건너뛰기</a>
 
 <header class="topbar"><div class="wrap row">
-  <button class="brand" id="brandBtn"><span class="mk">L</span><b data-i18n="brand">로컬 링크</b><span class="tag">Local Link</span></button>
+  <button class="brand" id="brandBtn"><b data-i18n="brand">로컬 링크</b><span class="tag mono">AI History Curator</span></button>
   <div class="top-actions">
-    <button class="btn-new" id="newSearchBtn" data-i18n="newSearch">새로 검색</button>
+    <button class="tlink" id="newSearchBtn" data-i18n="newSearch">새로 검색</button>
     <div class="lang" role="group" aria-label="Language">
-      <button id="btnKo" class="on" aria-pressed="true">KO</button>
-      <button id="btnEn" aria-pressed="false">EN</button>
+      <button id="btnKo" class="on" aria-pressed="true">KO</button><span aria-hidden="true">/</span><button id="btnEn" aria-pressed="false">EN</button>
     </div>
   </div>
 </div></header>
 
+<main id="main" tabindex="-1">
 <!-- LANDING -->
 <section class="view on" id="view-landing">
-  <div class="hero">
-    <div class="hero-grid-bg"></div>
-    <div class="hero-glow"></div>
-    <span class="pill reveal"><span class="d"></span><span data-i18n="pill">AI 역사 여행 큐레이터</span></span>
-    <h1 class="disp reveal" data-i18n="heroH1">역사를 <span class="sky">보는</span> 여행에서,<br/>역사 <span class="amb">속을 걷는</span> 여행으로</h1>
-    <p class="sub reveal" data-i18n="heroSub">동행·기간·분위기를 자유롭게 적어보세요. 감정을 고르면 AI가 이야기를 열고, 길까지 함께 알려드려요.</p>
-    <div class="searchbox reveal">
-      <input type="text" id="searchInput" placeholder="예) 1박2일 친구와 깊이 있는 역사 여행" aria-label="여행 조건 입력"/>
-      <button class="go" id="goBtn" data-i18n="searchGo">검색</button>
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-meta mono reveal"><span data-i18n="pill">AI 역사 여행 큐레이터</span><span data-i18n="heroMetaR">한국사 전체 · 실제 장소 · 가는 길</span></div>
+      <h1 class="hero-h reveal" data-i18n="heroH1">역사를 <span class="sky">보는</span> 여행에서,<br/>역사 <span class="amb">속을 걷는</span> 여행으로</h1>
+      <p class="hero-sub reveal" data-i18n="heroSub">동행·기간·분위기를 자유롭게 적어보세요. 감정을 고르면 AI가 이야기를 열고, 길까지 함께 알려드려요.</p>
+      <div class="search-col reveal">
+        <div class="searchbox">
+          <input type="text" id="searchInput" placeholder="예) 1박2일 친구와 깊이 있는 역사 여행" aria-label="여행 조건 입력"/>
+          <button class="go" id="goBtn" data-i18n="searchGo">검색</button>
+        </div>
+        <p class="search-hint mono" data-i18n="searchHint">예시로 시작하기</p>
+        <div class="chips" id="quickChips"></div>
+      </div>
     </div>
-    <p class="search-hint reveal" data-i18n="searchHint">✦ 어떻게 쓸지 모르겠다면 아래 예시를 눌러보세요</p>
-    <div class="chips reveal" id="quickChips"></div>
+    <ol class="steps4 reveal" id="steps4"></ol>
   </div>
 </section>
 
 <!-- LOADING -->
 <section class="view" id="view-loading">
-  <div class="loading" role="status" aria-live="polite">
-    <div class="ring" aria-hidden="true"></div>
-    <p class="kq" id="loadingQ"></p>
-    <p class="sub" id="loadingSub"></p>
-    <div class="tags" id="loadingTags"></div>
+  <div class="wrap">
+    <div class="loading" role="status" aria-live="polite">
+      <p class="kq" id="loadingQ"></p>
+      <div class="bar" aria-hidden="true"></div>
+      <p class="sub" id="loadingSub"></p>
+      <div class="tags" id="loadingTags"></div>
+    </div>
   </div>
 </section>
 
 <!-- EMOTIONS -->
 <section class="view" id="view-emotions">
-  <div class="emview">
-    <span class="context" id="emContext"></span>
+  <div class="wrap emview">
+    <div class="em-head mono">
+      <span class="context" id="emContext"></span>
+      <button class="back-link" id="backToLanding" data-i18n="backSearch">← 검색으로 돌아가기</button>
+    </div>
     <div class="understood" id="understood" style="display:none;">
-      <div class="uh" data-i18n="understoodH">이렇게 이해했어요</div>
+      <span class="uh mono" data-i18n="understoodH">이렇게 이해했어요</span>
       <div class="uchips" id="uchips"></div>
     </div>
-    <h2 class="disp" data-i18n="emH2">어떤 감정으로<br/>역사를 만나볼까요?</h2>
-    <p class="sub" data-i18n="emSub">같은 역사도, 감정에 따라 다른 이야기와 장소로 안내해요.</p>
+    <div class="em-title">
+      <h2 data-i18n="emH2">어떤 감정으로<br/>역사를 만나볼까요?</h2>
+      <p class="sub" data-i18n="emSub">같은 역사도, 감정에 따라 다른 이야기와 장소로 안내해요.</p>
+    </div>
     <div class="egrid" id="egrid"></div>
     <div class="em-actions">
-      <button class="chip" id="reshuffle" data-i18n="reshuffle">🔀 다른 감정 보기</button>
-      <button class="back-link" id="backToLanding" data-i18n="backSearch">← 검색으로 돌아가기</button>
+      <button class="tlink" id="reshuffle" data-i18n="reshuffle">다른 감정 보기 ↻</button>
     </div>
   </div>
 </section>
 
-<!-- DETAIL -->
 <!-- ============ 이야기 (감정 선택 직후, 흑백 선화 + 문장) ============ -->
 <section class="view" id="view-tale">
   <div class="tale" id="taleRoot">
@@ -374,6 +436,7 @@ html[lang="en"] .emo{font-size:14.5px;}
   <button class="tale-skip" id="taleSkip" type="button"></button>
 </section>
 
+<!-- DETAIL -->
 <section class="view" id="view-detail">
   <div class="wrap detail">
     <button class="back-link" id="backToEmotions" data-i18n="backEmotion">← 다른 감정 선택</button>
@@ -381,24 +444,28 @@ html[lang="en"] .emo{font-size:14.5px;}
   </div>
 </section>
 
+</main>
+
 <div id="overlayRoot"></div>
 <div id="toastRoot" role="status" aria-live="polite"></div>
 
-<footer class="footer"><div class="wrap ft">
-  <span><b data-i18n="brand2">로컬 링크</b> · AI History Curator</span>
-  <span class="steps" data-i18n="footR">감정으로 진입 <i>→</i> 서사로 몰입 <i>→</i> 교과서 연결 <i>→</i> 즉시 출발</span>
+<footer class="footer"><div class="wrap ft mono">
+  <span><b data-i18n="brand2">로컬 링크</b> — AI History Curator</span>
+  <span data-i18n="footR">데이터 · 한국관광공사 TourAPI, 카카오맵</span>
 </div></footer>
 
 <script>
 /* ================= i18n ================= */
 const DICT={
   ko:{
-    brand:"로컬 링크",brand2:"로컬 링크",newSearch:"새로 검색",
+    brand:"로컬 링크",brand2:"로컬 링크",newSearch:"새로 검색",skip:"본문으로 건너뛰기",
     pill:"AI 역사 여행 큐레이터",
     heroH1:'역사를 <span class="sky">보는</span> 여행에서,<br/>역사 <span class="amb">속을 걷는</span> 여행으로',
     heroSub:"동행·기간·분위기를 자유롭게 적어보세요. 감정을 고르면 AI가 이야기를 열고, 길까지 함께 알려드려요.",
     searchPh:"예) 1박2일 친구와 깊이 있는 역사 여행",searchGo:"검색",
-    searchHint:"✦ 어떻게 쓸지 모르겠다면 아래 예시를 눌러보세요",
+    searchHint:"예시로 시작하기",heroMetaR:"한국사 전체 · 실제 장소 · 가는 길",
+    steps:[["감정으로 진입","오늘의 마음에 맞는 역사를 고릅니다."],["서사로 몰입","짧은 이야기 한 편으로 그날 속에 들어갑니다."],["교과서 연결","배운 내용과 시험 포인트를 이어 줍니다."],["즉시 출발","실제 장소와 가는 길까지 안내합니다."]],
+    moodTag:{g:"뜨거움",b:"밝음",s:"고요"},
     chips:["1박2일 친구와 깊이 있는 역사 여행","혼자 가볍게 감성 산책","가족이랑 당일치기 교육 여행","연인과 사진 찍기 좋은 역사 투어"],
     searching:"AI가 문장 속 의도를 읽고, 어울리는 역사를 찾고 있어요…",
     searchingAll:"전체 역사를 살펴보는 중…",
@@ -406,33 +473,33 @@ const DICT={
     understoodH:"이렇게 이해했어요",
     emH2:"어떤 감정으로<br/>역사를 만나볼까요?",
     emSub:"같은 역사도, 감정에 따라 다른 이야기와 장소로 안내해요.",
-    reshuffle:"🔀 다른 감정 보기",backSearch:"← 검색으로 돌아가기",backEmotion:"← 다른 감정 선택",
+    reshuffle:"다른 감정 보기 ↻",backSearch:"← 검색으로 돌아가기",backEmotion:"← 다른 감정 선택",
     dims:{who:"동행",when:"기간",mood:"분위기"},
-    demoNote:"⚙ 데모 코스 — AI 연결이 안 되어 예시를 보여드려요 (키·네트워크 확인 후 다시 시도)",
-    storyK:"이 장소의 역사",learnedL:"📖 우리는 이 내용을 이렇게 배웠어요",
-    courseH:"📍 코스",courseSub:"이야기가 잠든 자리들",mapH:"🗺 코스 지도",
+    demoNote:"데모 코스 — AI 연결이 안 되어 예시를 보여드려요 (키·네트워크 확인 후 다시 시도)",
+    storyK:"이 장소의 역사",fictionH:"소설 전문",fictionSub:"사실을 바탕으로 쓴 짧은 소설",fictionMore:"전문 읽기 ↓",fictionLess:"접기 ↑",learnedL:"우리는 이 내용을 이렇게 배웠어요",
+    courseH:"코스",courseSub:"이야기가 잠든 자리들",mapH:"코스 지도",
     whyLabel:"왜 이곳인가요?",
     mapFallback:"지도를 불러오려면 카카오 JS 키를 설정하세요 (README 참고)",
-    tpH:"🚀 지금 추천하는 최고의 교통수단",tpFrom:"서울 출발",tpDest:"행",
-    wl:"날씨:",weathers:[["clear","☀ 맑음"],["rain","🌧 비"],["snow","❄ 눈"],["cloud","☁ 흐림"]],
-    badge:"✦ AI 추천",car:"🚗 자차",ktx:"🚄 KTX",bus:"🚌 고속버스",
+    tpH:"가는 방법",ktxLink:"코레일에서 시간표 보기 ↗",busLink:"고속버스 시간표 보기 ↗",tpFrom:"서울 출발",tpDest:"행",
+    wl:"날씨:",weathers:[["clear","맑음"],["rain","비"],["snow","눈"],["cloud","흐림"]],
+    badge:"AI 추천",car:"자차",ktx:"KTX",bus:"고속버스",
     carReasonClear:"도로가 원활해요. 자차로 편하게 이동 가능합니다.",
     carReasonBad:"기상 상황을 고려하면 대중교통이 더 안전해요.",
     liveRoute:"실시간 경로 기준",toll:"통행료",
-    ppH:"🎫 스탬프 패스포트",ppLeft:(n,total)=>`${total-n}곳 더 인증하면 완주!`,ppDone:"완주!",verify:"인증",verified:(nm)=>`${nm} 방문 인증!`,
-    tbH:"📖 교과서 연결",
-    learnH:"📖 학습 연결",levelH:"난이도",
+    ppH:"스탬프 패스포트",ppLeft:(n,total)=>`${total-n}곳 더 인증하면 완주`,ppDone:"완주했어요",verify:"인증",verified:(nm)=>`${nm} 방문을 기록했어요`,
+    tbH:"교과서 연결",
+    learnH:"학습 연결",levelH:"난이도",
     levels:[["middle","중등"],["high","고등"],["exam","수능"],["adult","교양"]],
     levelDemo:"AI 연결 시 이 난이도로 다시 써드려요",levelRewrite:"난이도를 반영해 다시 쓰는 중…",
     aiRetry:"AI 응답을 받지 못했어요. 잠시 후 다시 시도해 주세요.",
-    examH:"🧭 시험 연결",
+    examH:"시험 연결",
     saveNote:"＋ 시험 노트에 저장",noteSaved:(n)=>`시험 노트에 저장했어요 (${n}개)`,
     sourceLabel:"출처",factConfirmed:"✓ 사실 확인",factTheory:"❉ 설(說) 포함",
-    thenNowH:"🕰 그때와 지금",thenLabel:"그때",nowLabel:"지금",oldPending:"옛 자료 사진 준비 중 — 현재 사진에 세피아 처리한 데모입니다",
-    timelineH:"⏳ 사건의 흐름",
-    otherEmotion:"다른 감정으로 만나기 →",newSearch2:"새로 검색하기",
+    thenNowH:"그때와 지금",thenLabel:"그때",nowLabel:"지금",oldPending:"옛 자료 사진 준비 중 — 현재 사진에 세피아 처리한 데모입니다",
+    timelineH:"사건의 흐름",
+    otherEmotion:"다른 감정으로 만나기",newSearch2:"새로 검색하기",
     ccKicker:"ROUTE COMPLETED",ccH:"완주를 축하합니다",ccP:(nm)=>`「${nm}」의 모든 장소를 걸었습니다.`,
-    footR:"감정으로 진입 <i>→</i> 서사로 몰입 <i>→</i> 교과서 연결 <i>→</i> 즉시 출발",
+    footR:"데이터 · 한국관광공사 TourAPI, 카카오맵",
     emotions:[
       ["🔥","가슴 뜨거워지는,<br/>화나는 역사","g"],["😤","이건 좀 너무하지 않아?<br/>싶은 역사","g"],["📖","수능에 나왔는데<br/>제대로 몰랐던 역사","g"],
       ["💡","친구한테 쉽게<br/>설명할 수 있는 역사","b"],["🤯","이걸 130년 전에<br/>진짜 했다고?","b"],["📸","친구한테<br/>자랑하고 싶은 역사","b"],
@@ -443,12 +510,14 @@ const DICT={
     moodMap:{"깊이":"고밀도 서사","감성":"감성 산책","사진":"포토 스팟","교육":"교육 여행","가볍":"가벼운 코스"},
   },
   en:{
-    brand:"Local Link",brand2:"Local Link",newSearch:"New search",
+    brand:"Local Link",brand2:"Local Link",newSearch:"New search",skip:"Skip to content",
     pill:"AI History Travel Curator",
     heroH1:'From trips that <span class="sky">look at</span> history,<br/>to trips that <span class="amb">walk inside</span> it',
     heroSub:"Tell us who you’re with, how long, and the mood. Pick a feeling — AI opens a story and shows you the way.",
     searchPh:"e.g. 2-day deep history trip with a friend",searchGo:"Search",
-    searchHint:"✦ Not sure what to write? Try an example below",
+    searchHint:"Start from an example",heroMetaR:"All of Korean history · Real places · Directions",
+    steps:[["Enter by feeling","Pick the history that matches your mood today."],["Step into the story","A short story puts you inside that day."],["Link to the textbook","Connects what you learned with exam points."],["Leave right away","Real places, and how to get there."]],
+    moodTag:{g:"Heat",b:"Bright",s:"Calm"},
     chips:["2-day deep history trip with a friend","Solo, light and sentimental walk","Family day trip for learning","Photogenic history tour with a partner"],
     searching:"AI is reading your intent and finding matching history…",
     searchingAll:"Scanning all of Korean history…",
@@ -456,33 +525,33 @@ const DICT={
     understoodH:"Here’s what we understood",
     emH2:"Which feeling will you<br/>meet history with?",
     emSub:"The same history leads to different stories and places, depending on the feeling.",
-    reshuffle:"🔀 Show other feelings",backSearch:"← Back to search",backEmotion:"← Choose another feeling",
+    reshuffle:"Show other feelings ↻",backSearch:"← Back to search",backEmotion:"← Choose another feeling",
     dims:{who:"With",when:"Duration",mood:"Mood"},
-    demoNote:"⚙ Demo course — AI is unreachable, showing a sample (check key/network and retry)",
-    storyK:"The history of this place",learnedL:"📖 How textbooks tell it",
-    courseH:"📍 Course",courseSub:"Where the stories sleep",mapH:"🗺 Course map",
+    demoNote:"Demo course — AI is unreachable, showing a sample (check key/network and retry)",
+    storyK:"The history of this place",fictionH:"The full story",fictionSub:"A short piece of fiction based on the facts",fictionMore:"Read the full story ↓",fictionLess:"Collapse ↑",learnedL:"How textbooks tell it",
+    courseH:"Course",courseSub:"Where the stories sleep",mapH:"Course map",
     whyLabel:"Why here?",
     mapFallback:"Set the Kakao JS key to load the map (see README)",
-    tpH:"🚀 Best way to go right now",tpFrom:"From Seoul",tpDest:"",
-    wl:"Weather:",weathers:[["clear","☀ Clear"],["rain","🌧 Rain"],["snow","❄ Snow"],["cloud","☁ Cloudy"]],
-    badge:"✦ AI PICK",car:"🚗 By car",ktx:"🚄 KTX",bus:"🚌 Express bus",
+    tpH:"Getting there",ktxLink:"Check Korail timetable ↗",busLink:"Check bus timetable ↗",tpFrom:"From Seoul",tpDest:"",
+    wl:"Weather:",weathers:[["clear","Clear"],["rain","Rain"],["snow","Snow"],["cloud","Cloudy"]],
+    badge:"AI PICK",car:"By car",ktx:"KTX",bus:"Express bus",
     carReasonClear:"Roads are clear — driving is the comfortable option.",
     carReasonBad:"Given the weather, public transit is the safer bet.",
     liveRoute:"Based on live route",toll:"Toll",
-    ppH:"🎫 Stamp Passport",ppLeft:(n,total)=>`${total-n} more to complete!`,ppDone:"Completed!",verify:"Check in",verified:(nm)=>`Checked in at ${nm}!`,
-    tbH:"📖 Textbook connection",
-    learnH:"📖 Learning link",levelH:"Level",
+    ppH:"Stamp Passport",ppLeft:(n,total)=>`${total-n} more to complete`,ppDone:"Completed",verify:"Check in",verified:(nm)=>`Checked in at ${nm}`,
+    tbH:"Textbook connection",
+    learnH:"Learning link",levelH:"Level",
     levels:[["middle","Middle"],["high","High"],["exam","Exam"],["adult","General"]],
     levelDemo:"Connect AI to rewrite at this level",levelRewrite:"Rewriting for this level…",
     aiRetry:"Couldn't reach AI — please try again shortly.",
-    examH:"🧭 Exam link",
+    examH:"Exam link",
     saveNote:"＋ Save to exam notes",noteSaved:(n)=>`Saved to exam notes (${n})`,
     sourceLabel:"Sources",factConfirmed:"✓ Fact-checked",factTheory:"❉ Includes theory",
-    thenNowH:"🕰 Then & Now",thenLabel:"Then",nowLabel:"Now",oldPending:"Archival photo pending — demo applies sepia to the current photo",
-    timelineH:"⏳ Timeline",
-    otherEmotion:"Meet another feeling →",newSearch2:"Start a new search",
-    ccKicker:"ROUTE COMPLETED",ccH:"Congratulations!",ccP:(nm)=>`You walked every place of “${nm}”.`,
-    footR:"Feeling <i>→</i> Story <i>→</i> Connection <i>→</i> Departure",
+    thenNowH:"Then & Now",thenLabel:"Then",nowLabel:"Now",oldPending:"Archival photo pending — demo applies sepia to the current photo",
+    timelineH:"Timeline",
+    otherEmotion:"Meet another feeling",newSearch2:"Start a new search",
+    ccKicker:"ROUTE COMPLETED",ccH:"Route complete",ccP:(nm)=>`You walked every place of “${nm}”.`,
+    footR:"Data · Korea Tourism Organization TourAPI, Kakao Map",
     emotions:[
       ["🔥","History that makes<br/>your blood boil","g"],["😤","History that makes you say<br/>“that’s just too much”","g"],["📖","History you memorized<br/>but never really knew","g"],
       ["💡","History you can easily<br/>explain to a friend","b"],["🤯","They really did this<br/>130 years ago?","b"],["📸","History worth<br/>bragging about","b"],
@@ -509,6 +578,8 @@ let state={query:"",detected:[],emotion:"",level:"high",course:null,isDemo:false
 let recentRegions=(()=>{try{const a=JSON.parse(localStorage.getItem("recentRegions")||"[]");return Array.isArray(a)?a.slice(-12):[];}catch{return[];}})();
 const saveRecentRegions=()=>{try{localStorage.setItem("recentRegions",JSON.stringify(recentRegions));}catch{}};
 const MOODCLS={g:"heat",b:"bright",s:"calm"}; // 감정 그룹 → 테마
+const ficParas=(t)=>{const x=String(t||"");if(/\n/.test(x))return x.split(/\n+/).map(v=>v.trim()).filter(Boolean);
+  const ss=splitSentences(x),out=[];for(let i=0;i<ss.length;i+=3)out.push(ss.slice(i,i+3).join(" "));return out;};
 const splitSentences=(t)=>String(t||"").split(/(?<=[.!?。”"])\s+/).map(s=>s.trim()).filter(Boolean);
 
 /* ================= reveal-on-scroll ================= */
@@ -538,8 +609,10 @@ function renderStatics(){
   const d=D();
   $$("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n");if(typeof d[k]==="string")el.innerHTML=d[k];});
   $("#searchInput").placeholder=d.searchPh;
-  $("#quickChips").innerHTML=d.chips.map(c=>`<button class="chip">↳ ${c}</button>`).join("");
-  $$("#quickChips .chip").forEach(b=>b.addEventListener("click",()=>{$("#searchInput").value=b.textContent.replace(/^↳\s*/,"");doSearch();}));
+  const nn=(i)=>String(i+1).padStart(2,"0");
+  $("#quickChips").innerHTML=d.chips.map((c,i)=>`<button class="chip" data-q="${esc(c)}"><span class="mono">${nn(i)}</span>${esc(c)}</button>`).join("");
+  $$("#quickChips .chip").forEach(b=>b.addEventListener("click",()=>{$("#searchInput").value=b.dataset.q;doSearch();}));
+  $("#steps4").innerHTML=d.steps.map(([t,x],i)=>`<li><span class="mono">${nn(i)}</span><b>${t}</b><p>${x}</p></li>`).join("");
 }
 function applyLang(next){
   lang=next;document.documentElement.lang=next;
@@ -556,7 +629,7 @@ function doSearch(){
   if(!q){$("#searchInput").focus();return;}
   state.query=q;state.detected=parseQuery(q);
   const d=D();
-  $("#loadingQ").textContent=`"${q}"`;
+  $("#loadingQ").textContent=`“${q}”`;
   $("#loadingSub").textContent=d.searching;
   $("#loadingTags").innerHTML=(state.detected.length?state.detected:[null]).map((t,i)=>
     t?`<span class="at" style="animation-delay:${.2+i*.15}s">${d.dims[t.dim]} · <b>${esc(t.label)}</b></span>`
@@ -568,7 +641,7 @@ function doSearch(){
 function showEmotions(){
   const d=D();
   document.documentElement.removeAttribute("data-mood");
-  $("#emContext").textContent=`◎ "${state.query}"`;
+  $("#emContext").textContent=`“${state.query}”`;
   const u=$("#understood");
   if(state.detected.length){
     u.style.display="block";
@@ -581,7 +654,7 @@ function renderEgrid(){
   const d=D();
   const idx=[...Array(9).keys()].sort(()=>Math.random()-.5).slice(0,3);
   $("#egrid").innerHTML=idx.map(i=>{const[em,t,cls]=d.emotions[i];
-    return `<button class="emo ${cls}" data-pick="${i}"><span class="em">${em}</span><span>${t}</span></button>`;}).join("");
+    return `<button class="emo ${cls}" data-pick="${i}"><span class="emo-top"><span class="emo-em" aria-hidden="true">${em}</span><span class="emo-tag mono">${d.moodTag[cls]}</span></span><span class="emo-t">${t}</span></button>`;}).join("");
   $$("#egrid [data-pick]").forEach(b=>b.addEventListener("click",()=>pickEmotion(+b.dataset.pick)));
 }
 
@@ -717,7 +790,7 @@ async function pickEmotion(i){
   const emoText=d.emotions[i][1].replace(/<br\/>/g," ");
   state.emotion=emoText;
   document.documentElement.dataset.mood=MOODCLS[d.emotions[i][2]]||""; // 감정 = 테마
-  $("#loadingQ").textContent=`${d.emotions[i][0]} ${emoText}`;
+  $("#loadingQ").textContent=emoText;
   $("#loadingSub").textContent=d.generatingSub;
   $("#loadingTags").innerHTML="";
   setView("loading");
@@ -818,7 +891,7 @@ async function generateAndRender(myGen,keepOnFail){
     course=await r.json();
     if(!course.title||!Array.isArray(course.spots)||!course.spots.length)throw 0;
   }catch{
-    if(keepOnFail&&state.course&&!state.isDemo){if(myGen===gen)toast(D().aiRetry);return;}
+    if(keepOnFail&&state.course&&!state.isDemo){if(myGen===gen)toast(D().aiRetry,"err");return;}
     course=DEMO;isDemo=true;
   }
   if(myGen!==gen)return;
@@ -865,8 +938,8 @@ function changeLevel(lv){
   if(lv===state.level)return;
   state.level=lv;
   const d=D();
-  if(state.isDemo){renderDetail();toast(d.levelDemo);}
-  else{toast(d.levelRewrite);generateAndRender(++gen,true);}
+  if(state.isDemo){renderDetail();toast(d.levelDemo,"info");}
+  else{toast(d.levelRewrite,"info");generateAndRender(++gen,true);}
 }
 
 /* 옛날↔현재 비교 슬라이더 초기화 */
@@ -888,81 +961,88 @@ function renderDetail(){
   const tn=spots.find(s=>s.image&&s.oldImage); // 그때/지금: 큐레이션된 옛 사진이 있는 곳에만
   const factCls=c.factLevel==="theory"?"theory":(c.factLevel?"confirmed":"");
   $("#detailBody").innerHTML=`
-    <div class="detail-hero reveal">
-      <span class="dh-region">📍 ${esc(c.region||"")}</span>
-      <h1>${esc(c.title)}</h1>
-      <div class="dh-tags">${(c.hashtags||[]).map(h=>`<span>${esc(h)}</span>`).join("")}</div>
-      <div>
-        ${state.isDemo?`<span class="demo-note">${d.demoNote}</span>`:""}
+    <article class="art">
+    <header class="art-head reveal">
+      <div class="art-meta mono">
+        <span class="region">${esc(c.region||"")}</span>
+        ${(c.hashtags||[]).length?`<span>${c.hashtags.map(esc).join(" ")}</span>`:""}
         ${factCls?`<span class="fact-badge ${factCls}">${factCls==="theory"?d.factTheory:d.factConfirmed}</span>`:""}
       </div>
-    </div>
+      <h1 class="art-title">${esc(c.title)}</h1>
+      ${state.isDemo?`<p class="demo-note">${d.demoNote}</p>`:""}
+    </header>
     ${c.timeline&&c.timeline.length?`
-    <div class="panel slim reveal">
-      <h3>${d.timelineH}</h3>
-      <div class="timeline">${c.timeline.map(t=>`<div class="tl-item"><span class="tl-y">${esc(t.y)}</span><span class="tl-t">${esc(t.t)}</span></div>`).join("")}</div>
-    </div>`:""}
-    <div class="cols">
-      <div>
-        <div class="story-hero reveal">
-          <span class="sk">${d.storyK}</span>
-          ${splitSentences(c.story).map(s=>`<p class="story-line reveal">${esc(s)}</p>`).join("")}
-          ${c.quote?`<blockquote class="pullquote reveal">“${esc(c.quote)}”${c.quoteBy?`<cite>— ${esc(c.quoteBy)}</cite>`:""}</blockquote>`:""}
-          ${c.sources&&c.sources.length?`<div class="sources">📚 ${d.sourceLabel}: ${c.sources.map(esc).join(" · ")}</div>`:""}
-        </div>
-        ${tn?`
-        <div class="panel reveal">
-          <h3>${d.thenNowH}</h3>
-          <div class="ba" data-ba>
-            <div class="ba-img ba-now" style="background-image:url('${safeUrl(tn.image)}')"></div>
-            <div class="ba-img ba-old" style="background-image:url('${safeUrl(tn.oldImage)}');clip-path:inset(0 50% 0 0)"></div>
-            <div class="ba-handle" style="left:50%"><div class="ba-knob">⇄</div></div>
-            <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="${d.thenLabel} · ${d.nowLabel}"/>
-            <span class="ba-label then">${d.thenLabel}</span>
-            <span class="ba-label now">${d.nowLabel}</span>
+    <section class="sec reveal">
+      <div class="sec-h"><h3>${d.timelineH}</h3></div>
+      <ol class="timeline">${c.timeline.map(t=>`<li class="tl-item"><span class="tl-y">${esc(t.y)}</span><span class="tl-t">${esc(t.t)}</span></li>`).join("")}</ol>
+    </section>`:""}
+    <section class="sec story reveal">
+      <div class="sec-h"><h3>${d.storyK}</h3></div>
+      <div class="story-body">${splitSentences(c.story).map(s=>`<p class="story-line">${esc(s)}</p>`).join("")}</div>
+      <aside class="story-aside">
+        ${c.quote?`<blockquote class="pullquote">“${esc(c.quote)}”${c.quoteBy?`<cite>— ${esc(c.quoteBy)}</cite>`:""}</blockquote>`:""}
+        ${c.sources&&c.sources.length?`<div class="sources"><span class="mono">${d.sourceLabel}</span>${c.sources.map(esc).join(" · ")}</div>`:""}
+      </aside>
+    </section>
+    ${c.fiction&&c.fiction.text?`
+    <section class="sec fiction reveal">
+      <div class="sec-h"><h3>${d.fictionH}</h3><span class="pdesc">${d.fictionSub}</span></div>
+      ${c.fiction.title?`<p class="fic-title">「${esc(c.fiction.title)}」</p>`:""}
+      <div class="fic-body clamp" id="ficBody">${ficParas(c.fiction.text).map(t=>`<p>${esc(t)}</p>`).join("")}</div>
+      <button class="tlink fic-more" id="ficMore" aria-expanded="false" aria-controls="ficBody">${d.fictionMore}</button>
+    </section>`:""}
+    ${tn?`
+    <section class="sec reveal">
+      <div class="sec-h"><h3>${d.thenNowH}</h3></div>
+      <div class="ba" data-ba>
+        <div class="ba-img ba-now" style="background-image:url('${safeUrl(tn.image)}')"></div>
+        <div class="ba-img ba-old" style="background-image:url('${safeUrl(tn.oldImage)}');clip-path:inset(0 50% 0 0)"></div>
+        <div class="ba-handle" style="left:50%"><div class="ba-knob">⇄</div></div>
+        <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="${d.thenLabel} · ${d.nowLabel}"/>
+        <span class="ba-label then">${d.thenLabel}</span>
+        <span class="ba-label now">${d.nowLabel}</span>
+      </div>
+      <div class="ba-note">${esc(tn.oldCaption||"")}${tn.oldSource?` · ${esc(tn.oldSource)}`:""}</div>
+    </section>`:""}
+    <section class="sec reveal">
+      <div class="sec-h"><h3>${d.courseH}</h3><span class="pdesc">${d.courseSub}</span></div>
+      <ol class="course">${spots.map((s,i)=>`
+        <li class="rnode">
+          <span class="rpin">${String(i+1).padStart(2,"0")}</span>
+          <div class="rinfo">
+            <b>${esc(s.title||s.name)}</b>
+            ${s.addr?`<div class="addr">${esc(s.addr)}</div>`:""}
+            <p><span class="whyk">${d.whyLabel}</span>${esc(s.why||"")}</p>
           </div>
-          <div class="ba-note">🕰 ${esc(tn.oldCaption||"")}${tn.oldSource?` · ${esc(tn.oldSource)}`:""}</div>
-        </div>`:""}
-      </div>
-      <div>
-        <div class="panel reveal">
-          <h3>${d.courseH}</h3><p class="pdesc">${d.courseSub}</p>
-          ${spots.map((s,i)=>`
-            <div class="rnode">
-              <div class="rpin">${i+1}</div>
-              <div class="rinfo" style="flex:1;">
-                <b>${esc(s.title||s.name)}</b>
-                ${s.addr?`<div class="addr">${esc(s.addr)}</div>`:""}
-                <p><span class="whyk">${d.whyLabel}</span><br/>${esc(s.why||"")}</p>
-              </div>
-              ${s.image?`<div class="rimg show" style="background-image:url('${safeUrl(s.image)}')"></div>`:""}
-            </div>`).join("")}
-        </div>
-      </div>
-    </div>
-    <div class="grid2">
-      <div class="panel learn reveal">
-        <h3>${d.learnH}</h3>
-        <div class="lv" id="lvRoot">${d.levels.map(([id,label])=>`<button class="lvbtn${state.level===id?" on":""}" data-lv="${id}">${label}</button>`).join("")}</div>
+          ${s.image?`<div class="rimg" role="img" aria-label="${esc(s.title||s.name)}" style="background-image:url('${safeUrl(s.image)}')"></div>`:""}
+        </li>`).join("")}</ol>
+    </section>
+    ${mappable.length?`
+    <section class="sec split">
+      <div class="reveal"><div class="sec-h"><h3>${d.mapH}</h3></div><div id="map">${d.mapFallback}</div></div>
+      <div id="tpRoot" class="reveal"></div>
+    </section>`:`<section class="sec reveal" id="tpRoot"></section>`}
+    <section class="sec split">
+      <div class="learn reveal">
+        <div class="sec-h"><h3>${d.learnH}</h3></div>
+        <div class="lv" id="lvRoot"><span class="mono">${d.levelH}</span>${d.levels.map(([id,label])=>`<button class="lvbtn${state.level===id?" on":""}" data-lv="${id}">${label}</button>`).join("")}</div>
         ${c.textbook?`<div class="tb">${esc(c.textbook)}</div>`:""}
         ${c.exam?`<div class="exam"><div class="em-meta">${d.examH}${c.exam.meta?` · ${esc(c.exam.meta)}`:""}</div><div class="em-q">${esc(c.exam.q||"")}</div></div>`:""}
         ${c.keyPoints&&c.keyPoints.length?`<ul class="kp">${c.keyPoints.map(k=>`<li>${esc(k)}</li>`).join("")}</ul>`:""}
       </div>
       <div class="pp reveal" id="ppRoot"></div>
-    </div>
-    ${mappable.length?`
-    <div class="grid2">
-      <div class="panel reveal">
-        <h3>${d.mapH}</h3>
-        <div id="map">${d.mapFallback}</div>
-      </div>
-      <div id="tpRoot" class="reveal"></div>
-    </div>`:`<div id="tpRoot" class="reveal"></div>`}
-    <div class="actions-row reveal">
-      <button class="btn-wide" id="otherEmotionBtn">${d.otherEmotion}</button>
-      <button class="btn-wide ghost" id="newSearchBtn2">${d.newSearch2}</button>
-    </div>`;
+    </section>
+    <nav class="actions-row reveal">
+      <button class="big-link" id="otherEmotionBtn">${d.otherEmotion} <span class="ar" aria-hidden="true">→</span></button>
+      <button class="tlink" id="newSearchBtn2">${d.newSearch2}</button>
+    </nav>
+    </article>`;
   renderTransport();renderPassport();initBA();
+  const fb=$("#ficBody"),fm=$("#ficMore");
+  if(fb&&fm){
+    requestAnimationFrame(()=>{if(fb.scrollHeight<=fb.clientHeight+4){fb.classList.remove("clamp");fm.remove();}});
+    fm.addEventListener("click",()=>{const open=!fb.classList.toggle("clamp");fm.setAttribute("aria-expanded",open);fm.textContent=open?d.fictionLess:d.fictionMore;});
+  }
   if(mappable.length)drawMap(mappable);
   $$("#lvRoot [data-lv]").forEach(b=>b.addEventListener("click",()=>changeLevel(b.dataset.lv)));
   $("#otherEmotionBtn").addEventListener("click",()=>{renderEgrid();setView("emotions");});
@@ -981,7 +1061,8 @@ function renderTransport(){
                  {mode:d.car,info:carInfo,cost:carCost};
   root.innerHTML=`
     <div class="tp">
-      <div class="tp-head"><h3>${d.tpH}</h3><div class="tp-ctx"><span>${d.tpFrom}</span><span>📍 ${esc(dest)}${d.tpDest}</span></div></div>
+      <div class="sec-h"><h3>${d.tpH}</h3></div>
+      <p class="tp-ctx">${d.tpFrom} → ${esc(dest)}${d.tpDest}</p>
       <div class="wx-row"><span class="wl">${d.wl}</span>
         ${d.weathers.map(([id,label])=>`<button class="wx-btn${state.weather===id?" on":""}" data-wx="${id}">${label}</button>`).join("")}
       </div>
@@ -990,11 +1071,11 @@ function renderTransport(){
         <div class="bmode">${best.mode}</div>
         ${best.info?`<div class="binfo">${best.info}</div>`:""}
         ${best.cost?`<div class="binfo">${best.cost}</div>`:""}
-        <div class="breason">💡 ${bad?d.carReasonBad:d.carReasonClear}</div>
+        <div class="breason">${bad?d.carReasonBad:d.carReasonClear}</div>
       </div>
       ${bad&&car?`<div class="tp-opt"><span class="om">${d.car}</span><span class="ot">${carInfo}</span><span class="oc">${carCost}</span></div>`:""}
-      ${!bad?`<div class="tp-opt"><span class="om">${d.ktx}</span><span class="ot"></span><span class="oc"></span></div>`:""}
-      <div class="tp-opt"><span class="om">${d.bus}</span><span class="ot"></span><span class="oc"></span></div>
+      ${!bad?`<div class="tp-opt"><span class="om">${d.ktx}</span><a class="ot" href="https://www.letskorail.com" target="_blank" rel="noopener">${d.ktxLink}</a></div>`:""}
+      <div class="tp-opt"><span class="om">${d.bus}</span><a class="ot" href="https://www.kobus.co.kr" target="_blank" rel="noopener">${d.busLink}</a></div>
     </div>`;
   $$("#tpRoot [data-wx]").forEach(b=>b.addEventListener("click",()=>{state.weather=b.dataset.wx;renderTransport();}));
 }
@@ -1003,13 +1084,13 @@ function renderPassport(){
   const d=D(),root=$("#ppRoot");if(!root)return;
   const n=state.stamps.filter(Boolean).length,total=state.spots.length;
   root.innerHTML=`
-    <h3>${d.ppH}</h3>
-    <p class="psub">${n}/${total} — ${n<total?d.ppLeft(n,total):d.ppDone}</p>
-    <div class="progress"><span style="width:${(n/total)*100}%"></span></div>
+    <div class="sec-h"><h3>${d.ppH}</h3></div>
+    <p class="psub"><span class="num">${n}/${total}</span> — ${n<total?d.ppLeft(n,total):d.ppDone}</p>
+    <div class="progress"><span style="transform:scaleX(${total?n/total:0})"></span></div>
     ${state.spots.map((s,i)=>`
       <div class="pp-row">
         <span class="nm ${state.stamps[i]?"done":""}">${esc(s.title||s.name)}</span>
-        ${state.stamps[i]?`<span class="pp-check">✔</span>`:`<button class="pp-btn" data-stamp="${i}">${d.verify}</button>`}
+        ${state.stamps[i]?`<span class="pp-check">✓</span>`:`<button class="pp-btn" data-stamp="${i}">${d.verify}</button>`}
       </div>`).join("")}`;
   $$("#ppRoot [data-stamp]").forEach(b=>b.addEventListener("click",()=>{
     const i=+b.dataset.stamp;
@@ -1025,13 +1106,13 @@ function showComplete(){
   $("#overlayRoot").innerHTML=`
     <div class="overlay" id="ov">
       <div class="complete-card" role="dialog" aria-modal="true" aria-label="${d.ccH}">
-        <div class="cc-seal">🏆</div>
-        <span style="font-size:11px;letter-spacing:.24em;color:var(--skydk);font-weight:900;">${d.ccKicker}</span>
-        <h2 style="margin-top:10px;">${d.ccH}</h2>
+        <div class="cc-seal">${state.spots.length}/${state.spots.length}</div>
+        <span class="cc-kicker mono">${d.ccKicker}</span>
+        <h2>${d.ccH}</h2>
         <p>${d.ccP(state.course?.title||"")}</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;">
-          <button class="btn-wide" style="width:auto;padding:14px 22px;" id="ccOther">${d.otherEmotion}</button>
-          <button class="btn-wide ghost" style="width:auto;padding:14px 22px;margin-top:0;" id="ccHome">${d.newSearch2}</button>
+        <div class="cc-actions">
+          <button class="btn" id="ccOther">${d.otherEmotion}</button>
+          <button class="tlink" id="ccHome">${d.newSearch2}</button>
         </div>
       </div>
     </div>`;
@@ -1045,8 +1126,9 @@ function showComplete(){
 }
 
 let toastTimer=null;
-function toast(msg){
-  $("#toastRoot").innerHTML=`<div class="toast">✔ ${esc(msg)}</div>`;
+function toast(msg,kind="ok"){
+  const icon={ok:"✔",info:"…",err:"!"}[kind]||"✔";
+  $("#toastRoot").innerHTML=`<div class="toast${kind==="err"?" err":""}"><span aria-hidden="true">${icon}</span>${esc(msg)}</div>`;
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>$("#toastRoot").innerHTML="",2200);
 }
@@ -1084,7 +1166,7 @@ function drawMap(spots){
       const pos=new kakao.maps.LatLng(s.mapY,s.mapX);
       new kakao.maps.Marker({map,position:pos});
       new kakao.maps.CustomOverlay({map,position:pos,yAnchor:2.5,
-        content:`<div style="background:#1b1714;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;font-family:'Noto Sans KR';box-shadow:0 4px 10px rgba(0,0,0,.25)">${i+1}. ${esc(s.title)}</div>`});
+        content:`<div class="map-label">${i+1}. ${esc(s.title)}</div>`});
       bounds.extend(pos);
     });
     if(spots.length>1)map.setBounds(bounds,60,60,60,60);
